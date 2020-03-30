@@ -1,0 +1,12 @@
+///////////////////////////////////////////////////////////////////////////////
+//  File    :   run_tests.cpp
+//  Brief   :   Entry Point for GTest suite
+//  Author  :   Alexander DuPree
+///////////////////////////////////////////////////////////////////////////////
+
+#include "gtest/gtest.h"
+
+int main(int argc, char *argv[]) {
+  ::testing::InitGoogleTest(&argc, argv);
+  return RUN_ALL_TESTS();
+}

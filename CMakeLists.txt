@@ -12,3 +12,4 @@ set(BRIDGES_BIN ${PROJECT_SOURCE_DIR}/bin)
 include_directories(${BRIDGES_INCLUDE})
 
 add_subdirectory(src)
+add_subdirectory(tests)
