@@ -13,3 +13,4 @@ include_directories(${BRIDGES_INCLUDE})
 
 add_subdirectory(src)
 add_subdirectory(tests)
+add_subdirectory(third_party/googletest)
