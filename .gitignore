@@ -3,3 +3,6 @@ build/
 bin/
 .vs/
 .vscode/
+lib/
+include/gmock/
+include/gtest/
