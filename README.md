@@ -22,17 +22,23 @@ int main(void)
 
     server.set_root("/var/www1");
 
-    server.get("/", [](const Request& request, Response& resp) {
+    server.route("/", GET, [](const Request& request, Response& resp){
         resp.set_content("index.html");
     })
 
-    server.post("/update", [](const Request& request), Response& resp) {
+    server.route("/update", GET|POST, [](const Request& request), Response& resp) {
+        if(request.method() == GET)
+        {
+            resp.set_content("some_page.html");
+        }
+        else
+        {
+            std::string item = request.data["item"];
+            int quantiy      = request.data["quantity"];
 
-        std::string item = request.data["item"];
-        int quantiy      = request.data["quantity"];
+            // Do something with post parameters
 
-        // Do something with post parameters
-
+        }
         resp.status_code( OK );
     }
 

@@ -8,6 +8,8 @@
 #include <bridges/server.h>
 #include <gtest/gtest.h>
 
+using namespace bridges;
+
 TEST(TestServerListen, ValidHostAndPort)
 {
     Server server;

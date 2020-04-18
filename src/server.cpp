@@ -7,6 +7,9 @@
 
 #include <bridges/server.h>
 
+namespace bridges
+{
+
 Server::Server()
     : _server_fd(INVALID_SOCKET)
 {
@@ -32,3 +35,5 @@ bool Server::__listen()
     }
     return true;
 }
+
+} // namespace bridges
