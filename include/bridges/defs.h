@@ -30,14 +30,4 @@ using socket_t = int;
 
 using Method = u_int16_t;
 
-#define GET     0x1 << 0;
-#define HEAD    0x1 << 1;
-#define POST    0x1 << 2;
-#define PUT     0x1 << 3;
-#define DELETE  0x1 << 4;
-#define CONNECT 0x1 << 5;
-#define OPTIONS 0x1 << 6;
-#define TRACE   0x1 << 7;
-#define PATCH   0x1 << 8;
-
 #endif // BRIDGES_DEFS_H
