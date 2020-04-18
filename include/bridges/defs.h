@@ -14,5 +14,18 @@
 
 #define BRIDGES_VERSION "0.1.0"
 
+#ifdef _WIN32 
+
+// TODO add windows support
+
+#else 
+
+#include <sys/types.h>
+#include <sys/socket.h>
+
+#define INVALID_SOCKET (-1)
+using socket_t = int;
+
+#endif  // _WIN32
 
 #endif // BRIDGES_DEFS_H

@@ -9,6 +9,8 @@ include_directories(../third_party/googletest/googletest/include)
 set( SOURCE_FILES 
     run_tests.cpp
     defs_tests.cpp
+    ../src/server.cpp
+    server_tests.cpp
    )
 
 add_executable(bridges_tests ${SOURCE_FILES})
