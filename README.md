@@ -49,7 +49,7 @@ This sample code would deploy a server that will listen on `localhost:8000` whos
 ### Getting the source code and submodules
 
 ```bash
-git clone https://github.com/AlexanderJDupree/LinkedListsCPP.git
+git clone https://github.com/AlexanderJDupree/Bridges.git
 git submodule update --init --recursive
 ```
 
@@ -57,10 +57,12 @@ git submodule update --init --recursive
 Requires [cmake](https://cmake.org/)
 
 ```bash
-cmake --build build --config Debug --target install -- -j 6
-./bin/tests/bridges_tests
+mkdir build
+cd build && cmake ..
+make install
 ```
-The bridges binary will also be in the bin folder
+The tests binary will be in bin/tests/
+Bridges binary will be in bin/
 
 ## Contributing
 
