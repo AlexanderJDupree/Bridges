@@ -56,6 +56,7 @@ This sample code would deploy a server that will listen on `localhost:8000` whos
 
 ```bash
 git clone https://github.com/AlexanderJDupree/Bridges.git
+cd Bridges
 git submodule update --init --recursive
 ```
 
