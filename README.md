@@ -26,7 +26,7 @@ int main(void)
         resp.set_content("index.html");
     })
 
-    server.route("/update", GET|POST, [](const Request& request), Response& resp) {
+    server.route("/update", GET|POST, [](const Request& request, Response& resp) {
         if(request.method() == GET)
         {
             resp.set_content("some_page.html");
