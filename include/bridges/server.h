@@ -16,36 +16,40 @@
 namespace bridges
 {
 
-static const Method GET     =   0x1 << 0;
-static const Method HEAD    =   0x1 << 1;
-static const Method POST    =   0x1 << 2;
-static const Method PUT     =   0x1 << 3;
-static const Method DELETE  =   0x1 << 4;
-static const Method CONNECT =   0x1 << 5;
-static const Method OPTIONS =   0x1 << 6;
-static const Method TRACE   =   0x1 << 7;
-static const Method PATCH   =   0x1 << 8;
+static constexpr Method GET     =   0x1 << 0;
+static constexpr Method HEAD    =   0x1 << 1;
+static constexpr Method POST    =   0x1 << 2;
+static constexpr Method PUT     =   0x1 << 3;
+static constexpr Method DELETE  =   0x1 << 4;
+static constexpr Method CONNECT =   0x1 << 5;
+static constexpr Method OPTIONS =   0x1 << 6;
+static constexpr Method TRACE   =   0x1 << 7;
+static constexpr Method PATCH   =   0x1 << 8;
 
-using Handler = std::function<Response(const Request&)>;
-
+using Handler       = std::function<Response(const Request&)>;
 class Server
 {
 public:
 
-    Server();
+    Server(Path document_root = ".", int server_backlog = 5);
 
-    bool listen(const char* host, int port, int flags = 0);
-    bool bind_to_port(const char* host, int port, int flags = 0);
+    bool listen(const char* host, unsigned port, int flags = 0);
+    bool bind_to_port(const char* host, unsigned port, int flags = 0);
     
-    void set_root(const char* path);
+    void set_root(Path path);
 
     void route(const char* pattern, Method methods, Handler handler);
 
 private:
 
-    socket_t _server_fd;
+    using Socket_Action = std::function<bool(Socket, struct addrinfo*)>;
+
+    Socket  _server_fd;
+    Path    _document_root;
+    int     _backlog;
 
     bool __listen();
+    Socket __create_socket(const char* host, unsigned port, int flags, Socket_Action sa);
 };
 
     

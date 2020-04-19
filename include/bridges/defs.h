@@ -14,20 +14,44 @@
 
 #define BRIDGES_VERSION "0.1.0"
 
+///////////////////////////////////////////////////////////////////////////////
+// General Includes
+///////////////////////////////////////////////////////////////////////////////
+
+#include <string>
+
 #ifdef _WIN32 
 
 // TODO add windows support
 
 #else  // Unix
 
+#include <netdb.h>
+#include <unistd.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 
+#include <string.h>
+
 #define INVALID_SOCKET (-1)
-using socket_t = int;
+
+#define clear_struct(x) memset(&x, 0, sizeof(x))
 
 #endif  // _WIN32
 
+///////////////////////////////////////////////////////////////////////////////
+// Common Types
+///////////////////////////////////////////////////////////////////////////////
+
+namespace bridges
+{
 using Method = u_int16_t;
+
+using Path = std::string;
+
+using Socket = int;
+
+
+} // namespace bridges
 
 #endif // BRIDGES_DEFS_H
