@@ -26,7 +26,7 @@ int main(void)
         resp.set_content("index.html");
     })
 
-    server.route("/update", GET|POST, [](const Request& request), Response& resp) {
+    server.route("/update", GET|POST, [](const Request& request, Response& resp) {
         if(request.method() == GET)
         {
             resp.set_content("some_page.html");
@@ -56,6 +56,7 @@ This sample code would deploy a server that will listen on `localhost:8000` whos
 
 ```bash
 git clone https://github.com/AlexanderJDupree/Bridges.git
+cd Bridges
 git submodule update --init --recursive
 ```
 
