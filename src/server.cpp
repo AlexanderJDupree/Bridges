@@ -21,9 +21,8 @@ Server::Server(Path document_root, int server_backlog)
 bool Server::bind_to_port(const char* host, unsigned port, int flags)
 {
     _server_fd = __create_socket(host, port, flags, [&](Socket sockfd, struct addrinfo* ai){
-        return (::bind( sockfd, ai->ai_addr, ai->ai_addrlen ) == 0) 
-            && (::listen( sockfd, _backlog ) == 0);
-    });
+        return bind( sockfd, ai->ai_addr, ai->ai_addrlen ) == 0;
+    } );
 
     return _server_fd != INVALID_SOCKET;
 }
@@ -35,42 +34,66 @@ bool Server::listen(const char* host, unsigned port, int flags)
 
 bool Server::__listen()
 {
-    if(_server_fd == INVALID_SOCKET)
+    if( ::listen(_server_fd, _backlog ) != 0)
     {
         // TODO set error message?
         return false;
     }
 
-    struct sockaddr_in address;
-    int addrlen = sizeof(address);
+    struct sockaddr_storage client_address;
+    socklen_t addrlen = sizeof( client_address );
 
-    Socket new_socket = INVALID_SOCKET;
+    Socket client_socket = INVALID_SOCKET;
 
     const char *msg = "HTTP/1.1 200 OK\nContent-Type: text/plain\nContent-Length: 12\n\nHello world!";
 
     while(true)
     {
-        // PROTOYPE
-        printf("\n+++++++ Waiting for new connection ++++++++\n\n");
-        if ((new_socket = accept(_server_fd, (struct sockaddr *)&address, (socklen_t*)&addrlen))<0)
+        // Accept is a blocking call
+        client_socket = accept( _server_fd, (struct sockaddr* ) &client_address, &addrlen);
+
+        if( client_socket != INVALID_SOCKET )
         {
-            // TODO log  error
-            continue; 
+            size_t total_bytes = 0;
+            const size_t FIXED_BUFFER_SIZE = 30000;
+            Buffer buffer;
+            char fixed_buffer[FIXED_BUFFER_SIZE];
+            memset( fixed_buffer, '\0', sizeof( fixed_buffer ) );
+           
+            bool receiving = true;
+            while ( receiving )
+            {
+                size_t nbytes = recv( client_socket, fixed_buffer, FIXED_BUFFER_SIZE - 1, 0);
+
+                if(nbytes <= 0)
+                {
+                    if(nbytes == 0)
+                    {
+                        // Socket closed 
+                        return false;
+                    }
+                    // -1, error occured
+                    return false;
+                }
+                else
+                {
+                    total_bytes += nbytes;
+                    buffer += fixed_buffer;
+
+                    if(total_bytes < FIXED_BUFFER_SIZE)
+                    {
+                        receiving = false;
+                    }
+                }
+            }
+
+            printf("%s\n", buffer.c_str());
+
+            size_t valwrite = write(client_socket, msg, strlen(msg));
+            if(valwrite < strlen(msg)) { return false; }
+
+            close(client_socket);
         }
-        
-        char buffer[30000];
-
-        size_t valread = read( new_socket , buffer, 30000);
-        if(valread > 30000) { return false; }
-
-        // "log" request to 
-        printf("%s\n",buffer );
-
-        size_t valwrite = write(new_socket , msg , strlen(msg));
-        if(valwrite < strlen(msg)) { return false; }
-
-        printf("------------------Hello message sent-------------------");
-        close(new_socket);
 
         // TODO: Log connections and requests
     }
@@ -96,38 +119,39 @@ Socket Server::__create_socket(const char* host, unsigned port, int flags, Socke
 
     auto service = std::to_string(port);
 
-    if (getaddrinfo(host, service.c_str(), &hints, &result) != 0) 
+    if ( getaddrinfo( host, service.c_str(), &hints, &result ) != 0 ) 
     {
     // TODO: log error code?
     return INVALID_SOCKET;
     }
 
-    for (auto rp = result; rp; rp = rp->ai_next) 
+    bool success = false;
+    Socket sockfd = INVALID_SOCKET;
+    // Scan through results and attempt to create a socket
+    for ( auto rp = result; rp && !success; rp = rp->ai_next ) 
     {
         // Create a socket
-        Socket sockfd = socket(rp->ai_family, rp->ai_socktype, rp->ai_protocol);
+        sockfd = socket(rp->ai_family, rp->ai_socktype, rp->ai_protocol);
 
         if (sockfd == INVALID_SOCKET) { continue; }
 
-        // Make 'reuse address' option available
-        int yes=1;
-
-        // lose the pesky "Address already in use" error message
-        if (setsockopt( sockfd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof yes) == -1) {
-            continue;
-        } 
-
-        if( socket_action(sockfd, rp) )
+        success = __allow_reuse_address( sockfd ) && socket_action( sockfd, rp);
+        if( !success )
         {
-            freeaddrinfo(result);
-            return sockfd;
+            close( sockfd );
+            sockfd = INVALID_SOCKET;
         }
-
-        close(sockfd);
     }
 
     freeaddrinfo(result);
-    return INVALID_SOCKET;
+    return sockfd;
+}
+
+bool Server::__allow_reuse_address(Socket socket)
+{
+    int yes=1;
+
+    return setsockopt( socket, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof( yes ) ) == 0;
 }
 
 } // namespace bridges

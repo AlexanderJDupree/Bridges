@@ -45,13 +45,10 @@
 
 namespace bridges
 {
-using Method = u_int16_t;
-
-using Path = std::string;
-
-using Socket = int;
-
-
+using Method    = u_int16_t;
+using Path      = std::string;
+using Buffer    = std::string;
+using Socket    = int;
 } // namespace bridges
 
 #endif // BRIDGES_DEFS_H

@@ -26,7 +26,8 @@ static constexpr Method OPTIONS =   0x1 << 6;
 static constexpr Method TRACE   =   0x1 << 7;
 static constexpr Method PATCH   =   0x1 << 8;
 
-using Handler       = std::function<Response(const Request&)>;
+using Handler = std::function<Response(const Request&)>;
+
 class Server
 {
 public:
@@ -49,6 +50,7 @@ private:
     int     _backlog;
 
     bool __listen();
+    bool __allow_reuse_address(Socket socket);
     Socket __create_socket(const char* host, unsigned port, int flags, Socket_Action sa);
 };
 
