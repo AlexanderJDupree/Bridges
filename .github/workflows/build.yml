@@ -60,10 +60,8 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
-
-      - name: Checkout submodules
-        shell: bash
-        run: git submodule update --init --recursive
+          with: 
+            submodules: true
 
       - name: Configure
         shell: bash
