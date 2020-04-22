@@ -10,8 +10,8 @@
 
 using namespace bridges;
 
-TEST(TestServerListen, ValidHostAndPort)
+TEST(TestServerBindToPort, ValidHostAndPort)
 {
     Server server;
-    EXPECT_TRUE(server.listen("localhost", 8000));
+    EXPECT_TRUE(server.bind_to_port("localhost", 8000));
 }
