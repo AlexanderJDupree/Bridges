@@ -68,29 +68,34 @@ jobs:
         run: mkdir build && cd build && cmake -DCMAKE_CXX_FLAGS="-Werror" ..
         
       - name: Build
+        working-directory: build
         shell: bash
         run: cmake --build . --config ${{ matrix.config.build_type }}
 
       - name: Install Binaries
+        working-directory: build
         shell: bash
         run: cmake --build . --config ${{ matrix.config.build_Type }} --target install/strip -- -j 6
       
       - name: Run Tests
+        working-directory: build
         shell: bash
         run: ./${{ env.bridges_test }}
       
       - name: Run Server
+        working-directory: build
         shell: bash
         run: ./${{ env.bridges_app }} &; BRIDGES_PID=$!; sleep 1; curl localhost:8000; sleep 1; kill $BRIDGES_PID
 
       - name: Pack
         shell: bash
-        working-directory: bin
+        working-directory: build/bin
         run: |
           ls -laR
           ${{ matrix.config.archiver }} ../${{ matrix.config.artifact }} .
           
       - name: Upload
+        working-directory: build
         uses: actions/upload-artifact@v1
         with:
           path: ./${{ matrix.config.artifact }}
