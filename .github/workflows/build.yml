@@ -95,7 +95,6 @@ jobs:
           ${{ matrix.config.archiver }} ../${{ matrix.config.artifact }} .
           
       - name: Upload
-        working-directory: build
         uses: actions/upload-artifact@v1
         with:
           path: ./${{ matrix.config.artifact }}
