@@ -85,7 +85,11 @@ jobs:
       - name: Run Server
         working-directory: build
         shell: bash
-        run: ./${{ env.bridges_app }} &; BRIDGES_PID=$!; sleep 1; curl localhost:8000; sleep 1; kill $BRIDGES_PID
+        run: |
+          ./${{ env.bridges_app }} & 
+          BRIDGES_PID=$!
+          sleep 1 && curl localhost:8000
+          sleep 1 && kill $BRIDGES_PID
 
       - name: Pack
         shell: bash
