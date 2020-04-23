@@ -6,7 +6,7 @@ on: [push, pull_request, release]
 env:
   bridges_app: "build/bin/bridges"
   bridges_test: "build/bin/tests/bridges_tests"
-  artifacts: "build"
+  artifacts: "bin compile_commands.json install_manifest.txt CMakeFiles"
 
 jobs:
   build:
@@ -62,7 +62,7 @@ jobs:
 
       - name: Configure
         shell: bash
-        run: mkdir build && cd build && cmake -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON ..
+        run: mkdir build && cd build && cmake -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON -DCMAKE_EXPORT_COMPILE_COMMANDS=ON ..
         
       - name: Build
         working-directory: build
@@ -88,15 +88,16 @@ jobs:
 
       - name: Pack
         if: always()
+        working_directory: build
         shell: bash
         run: |
-          ${{ matrix.config.archiver }} ${{ matrix.config.artifact }} ${{ env.artifacts }}
+          ${{ matrix.config.archiver }} ../${{ matrix.config.artifact }} ${{ env.artifacts }}
           
       - name: Upload Artifacts
         if: always()
         uses: actions/upload-artifact@v1
         with:
-          path: .
+          path: ./${{ matrix.config.artifact }}
           name: ${{ matrix.config.artifact }}
 
       - name: Upload Release Artifacts
