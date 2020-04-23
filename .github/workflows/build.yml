@@ -6,7 +6,7 @@ on: [push, pull_request, release]
 env:
   bridges_app: "build/bin/bridges"
   bridges_test: "build/bin/tests/bridges_tests"
-  artifacts: "bin compile_commands.json install_manifest.txt CMakeFiles"
+  artifacts: "bin compile_commands.json install_manifest.txt CMakeFiles/CMakeError.log CMakeFiles/CMakeOutput.log"
 
 jobs:
   build:
@@ -88,7 +88,7 @@ jobs:
 
       - name: Pack
         if: always()
-        working_directory: build
+        working-directory: build
         shell: bash
         run: |
           ${{ matrix.config.archiver }} ../${{ matrix.config.artifact }} ${{ env.artifacts }}
