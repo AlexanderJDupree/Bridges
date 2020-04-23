@@ -1,15 +1,12 @@
 
 name: Bridges CI/CD
 
-# Controls when the action will run. Triggers the workflow on push
-on: 
-  push:
-  pull_request:
-  release:
+on: [push, pull_request, release]
 
 env:
-  bridges_app: "bin/bridges"
-  bridges_test: "bin/tests/bridges_tests"
+  bridges_app: "build/bin/bridges"
+  bridges_test: "build/bin/tests/bridges_tests"
+  artifacts: "build"
 
 jobs:
   build:
@@ -26,8 +23,8 @@ jobs:
             build_type: "Release",
             cc: "cl",
             cxx: "cl",
-            environment_script: "C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/VC/Auxiliary/Build/vcvars64.bat",
-            archiver: "7z a",
+            archiver: "7z a"
+
           }
         - {
             name: "Windows Latest MinGW",
@@ -36,25 +33,25 @@ jobs:
             build_type: "Release",
             cc: "gcc",
             cxx: "g++",
-            archiver: "7z a",
+            archiver: "7z a"
           }
         - {
-            name: "Ubuntu_Latest_GCC",
+            name: "Ubuntu Latest GCC",
             os: ubuntu-latest,
-            artifact: "ubuntu_gcc.7z",
+            artifact: "ubuntu_gcc.tar",
             build_type: "Release",
             cc: "gcc",
             cxx: "g++",
-            archiver: "7z a",
+            archiver: "tar -czvf"
           }
         - {
-            name: "macOS Latest Clang",
+            name: "MacOS Latest Clang",
             os: macos-latest,
-            artifact: "macos_clang.7z",
+            artifact: "macos_clang.tar",
             build_type: "Release",
             cc: "clang",
             cxx: "clang++",
-            archiver: "7z a"
+            archiver: "tar -czvf"
           }
 
     steps:
@@ -65,7 +62,7 @@ jobs:
 
       - name: Configure
         shell: bash
-        run: mkdir build && cd build && cmake -DCMAKE_CXX_FLAGS="-Werror" ..
+        run: mkdir build && cd build && cmake -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON ..
         
       - name: Build
         working-directory: build
@@ -78,12 +75,10 @@ jobs:
         run: cmake --build . --config ${{ matrix.config.build_Type }} --target install/strip -- -j 6
       
       - name: Run Tests
-        working-directory: build
         shell: bash
         run: ./${{ env.bridges_test }}
       
       - name: Run Server
-        working-directory: build
         shell: bash
         run: |
           ./${{ env.bridges_app }} & 
@@ -92,16 +87,16 @@ jobs:
           sleep 1 && kill $BRIDGES_PID
 
       - name: Pack
+        if: always()
         shell: bash
-        working-directory: build/bin
         run: |
-          ls -laR
-          ${{ matrix.config.archiver }} ../${{ matrix.config.artifact }} .
+          ${{ matrix.config.archiver }} ${{ matrix.config.artifact }} ${{ env.artifact }}
           
-      - name: Upload
+      - name: Upload Artifacts
+        if: always()
         uses: actions/upload-artifact@v1
         with:
-          path: ./build/${{ matrix.config.artifact }}
+          path: .
           name: ${{ matrix.config.artifact }}
 
       - name: Upload Release Artifacts
