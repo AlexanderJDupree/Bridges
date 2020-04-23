@@ -32,14 +32,42 @@ class Server
 {
 public:
 
-    Server(Path document_root = ".", int server_backlog = 5);
+    Server
+        ( 
+        Path    document_root = "/var/www", 
+        int     server_backlog = 5
+        );
 
-    bool listen(const char* host, unsigned port, int flags = 0);
-    bool bind_to_port(const char* host, unsigned port, int flags = 0);
+    bool listen
+        ( 
+        const char*   host, 
+        unsigned      port, 
+        int           flags = 0
+        );
+
+    bool bind_to_port
+        (
+        const char* host, 
+        unsigned port, 
+        int flags = 0
+        );
     
-    void set_root(Path path);
+    Server& set_root
+        (
+        Path&& path
+        );
 
-    void route(const char* pattern, Method methods, Handler handler);
+    const Path& get_root
+        (
+        void
+        );
+
+    Server& route
+        (
+        const char* pattern, 
+        Method methods, 
+        Handler handler
+        );
 
 private:
 
@@ -49,9 +77,23 @@ private:
     Path    _document_root;
     int     _backlog;
 
-    bool __listen();
-    bool __allow_reuse_address(Socket socket);
-    Socket __create_socket(const char* host, unsigned port, int flags, Socket_Action sa);
+    bool __listen
+        (
+        void
+        );
+
+    bool __allow_reuse_address
+        ( 
+        Socket socket
+        );
+
+    Socket __create_socket
+        (
+        const char* host, 
+        unsigned port, 
+        int flags, 
+        Socket_Action sa
+        );
 };
 
     

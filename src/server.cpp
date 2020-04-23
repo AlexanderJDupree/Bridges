@@ -10,15 +10,24 @@
 namespace bridges
 {
 
-Server::Server(Path document_root, int server_backlog)
-    : _server_fd        ( INVALID_SOCKET )
-    , _document_root    ( document_root  )
-    , _backlog          ( server_backlog )
+Server::Server
+    (
+    Path document_root, 
+    int server_backlog
+    )
+: _server_fd        ( INVALID_SOCKET )
+, _document_root    ( document_root  )
+, _backlog          ( server_backlog )
 {
 
 }
 
-bool Server::bind_to_port(const char* host, unsigned port, int flags)
+bool Server::bind_to_port
+    (
+    const char* host, 
+    unsigned port, 
+    int flags
+    )
 {
     _server_fd = __create_socket(host, port, flags, [&](Socket sockfd, struct addrinfo* ai){
         return bind( sockfd, ai->ai_addr, ai->ai_addrlen ) == 0;
@@ -27,12 +36,20 @@ bool Server::bind_to_port(const char* host, unsigned port, int flags)
     return _server_fd != INVALID_SOCKET;
 }
 
-bool Server::listen(const char* host, unsigned port, int flags)
+bool Server::listen
+    (
+    const char* host, 
+    unsigned port, 
+    int flags
+    )
 {
     return bind_to_port(host, port, flags) && __listen();
 }
 
-bool Server::__listen()
+bool Server::__listen
+    (
+    void
+    )
 {
     if( ::listen(_server_fd, _backlog ) != 0)
     {
@@ -99,12 +116,30 @@ bool Server::__listen()
     }
 }
 
-void Server::set_root(Path path)
+Server& Server::set_root
+    (
+    Path&& path
+    )
 {
     _document_root = path;
+    return *this;
 }
 
-Socket Server::__create_socket(const char* host, unsigned port, int flags, Socket_Action socket_action)
+const Path& Server::get_root
+    (
+    void
+    )
+{
+    return _document_root;
+}
+
+Socket Server::__create_socket
+    (
+    const char* host, 
+    unsigned port, 
+    int flags, 
+    Socket_Action socket_action
+    )
 {
     // Get address info
     struct addrinfo hints;
@@ -147,7 +182,10 @@ Socket Server::__create_socket(const char* host, unsigned port, int flags, Socke
     return sockfd;
 }
 
-bool Server::__allow_reuse_address(Socket socket)
+bool Server::__allow_reuse_address
+    (
+    Socket socket
+    )
 {
     int yes=1;
 
