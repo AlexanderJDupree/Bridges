@@ -90,7 +90,7 @@ jobs:
         if: always()
         shell: bash
         run: |
-          ${{ matrix.config.archiver }} ${{ matrix.config.artifact }} ${{ env.artifact }}
+          ${{ matrix.config.archiver }} ${{ matrix.config.artifact }} ${{ env.artifacts }}
           
       - name: Upload Artifacts
         if: always()
