@@ -31,6 +31,8 @@
 #define SHUT_WR	  SD_SEND
 #define SHUT_RDWR SD_BOTH
 
+#define WS_VERSION MAKEWORD(2,0)	/* Requested Windows Socket Verion */
+
 using socket_t = SOCKET;
 
 #else  // Unix

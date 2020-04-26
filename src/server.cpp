@@ -19,7 +19,13 @@ Server::Server
 , _backlog          ( server_backlog )
 , _document_root    ( document_root  )
 {
-
+#ifdef _WIN32
+    if (WSAStartup(WS_VERSION, &wsadata) != 0)
+		{
+        // Windows DLL version mismatch, log error
+        throw std::exception( "( Bridges ) FATAL: WSAStartup Failed." );
+		}
+#endif
 }
 
 bool Server::bind_to_port
@@ -154,10 +160,12 @@ Socket Server::__create_socket
 
     auto service = std::to_string(port);
 
-    if ( getaddrinfo( host, service.c_str(), &hints, &result ) != 0 ) 
+    int rc;
+    if ( (rc = getaddrinfo( host, service.c_str(), &hints, &result )) != 0 ) 
     {
+        fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(rc));
     // TODO: log error code?
-    return INVALID_SOCKET;
+        return INVALID_SOCKET;
     }
 
     bool success = false;

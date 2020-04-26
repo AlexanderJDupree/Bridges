@@ -77,6 +77,10 @@ private:
     int     _backlog;
     Path    _document_root;
 
+#ifdef _WIN32
+    WSADATA wsadata;    /* stores details about windows socket info */
+#endif
+
     bool __listen
         (
         void
