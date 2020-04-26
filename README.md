@@ -1,4 +1,5 @@
 # Bridges
+![Build/Test](https://github.com/AlexanderJDupree/Bridges/workflows/Build/Test/badge.svg)
 
 ## Introduction
 
