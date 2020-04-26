@@ -67,12 +67,12 @@ jobs:
       - name: Build
         working-directory: build
         shell: bash
-        run: cmake --build . --config ${{ matrix.config.build_type }}
+        run: cmake --build . --config ${{ matrix.config.build_type }} --parallel 6
 
       - name: Install Binaries
         working-directory: build
         shell: bash
-        run: cmake --build . --config ${{ matrix.config.build_Type }} --target install/strip -- -j 6
+        run: cmake --build . --config ${{ matrix.config.build_Type }} --target install/strip --parallel 6
       
       - name: Run Tests
         shell: bash
