@@ -1,5 +1,5 @@
 # Bridges
-![Build/Test](https://github.com/AlexanderJDupree/Bridges/workflows/Build/Test/badge.svg)
+[![Build/Test](https://github.com/AlexanderJDupree/Bridges/workflows/Build/Test/badge.svg)](https://github.com/AlexanderJDupree/Bridges/actions)
 
 ## Introduction
 
