@@ -27,6 +27,8 @@ public:
         time_t      read_timeout        = DFLT_READ_TIMEOUT
         );
 
+    ~Socket() = default;
+
     bool bind
         (
         const char* host,

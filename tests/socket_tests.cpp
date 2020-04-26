@@ -14,6 +14,10 @@ class SocketTest : public::testing::Test {
 
 protected:
 
+    void TearDown() override {
+        socket.close();
+    }
+
     Socket socket;
 
 };
@@ -37,11 +41,6 @@ TEST_F(SocketTest, BindInvalidHost)
     EXPECT_FALSE( socket.bind("not a host", 8000) );
 }
 
-TEST_F(SocketTest, BindInvalidPort)
-{
-    EXPECT_FALSE( socket.bind( "localhost", -1) );
-}
-
 TEST_F(SocketTest, ListenBoundSocket)
 {
     socket.bind("localhost", 8000);
@@ -54,11 +53,5 @@ TEST_F(SocketTest, ListenUnboundSocket)
     EXPECT_FALSE( socket.listen( 5 ) );
 }
 
-TEST_F(SocketTest, ListenNoBacklog)
-{
-    socket.bind("localhost", 8000);
-
-    EXPECT_TRUE( socket.listen(0));
-}
 
 }
