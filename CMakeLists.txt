@@ -15,6 +15,8 @@ set(BRIDGES_BIN ${PROJECT_SOURCE_DIR}/build/bin)
 
 include_directories(${BRIDGES_INCLUDE})
 
+set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+
 add_subdirectory(src)
 add_subdirectory(tests)
 add_subdirectory(third_party/googletest)
