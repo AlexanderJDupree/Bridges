@@ -1,10 +1,17 @@
 cmake_minimum_required(VERSION 3.2)
 project(bridges)
 
-set(SOURCE_FILES 
-    main.cpp
-    server.cpp
-    )
 
-add_executable(bridges ${SOURCE_FILES})
-install(TARGETS bridges DESTINATION ${BRIDGES_BIN})
+add_library(bridges STATIC 
+            server.cpp
+            socket.cpp
+           )
+
+add_executable(run_bridges 
+               main.cpp
+              )
+
+target_link_libraries(run_bridges bridges)
+
+install(TARGETS run_bridges DESTINATION ${BRIDGES_BIN})
+install(TARGETS bridges DESTINATION lib)

@@ -12,13 +12,19 @@ namespace bridges
 
 Server::Server
     (
-    Path document_root, 
-    int server_backlog
+    Path    document_root, 
+    size_t  server_backlog,
+    size_t  keep_alive_max_count,
+    size_t  read_timeout_sec,
+    size_t  read_timeout_usec
     )
-: _server_fd        ( INVALID_SOCKET )
-, _backlog          ( server_backlog )
-, _document_root    ( document_root  )
+: _backlog              ( server_backlog        )
+, _keep_alive_max_count ( keep_alive_max_count  )
+, _read_timeout_sec     ( read_timeout_sec      )
+, _read_timeout_usec    ( read_timeout_usec     )
+, _document_root        ( document_root         )
 {
+    _server_socket = INVALID_SOCKET;
 #ifdef _WIN32
     if (WSAStartup(WS_VERSION, &wsadata) != 0)
 		{
@@ -35,11 +41,11 @@ bool Server::bind_to_port
     int flags
     )
 {
-    _server_fd = __create_socket(host, port, flags, [&](Socket sockfd, struct addrinfo* ai){
+    _server_socket =__create_socket(host, port, flags, [&](Socket sockfd, struct addrinfo* ai){
         return bind( sockfd, ai->ai_addr, ai->ai_addrlen ) == 0;
     } );
 
-    return _server_fd != INVALID_SOCKET;
+    return _server_socket != INVALID_SOCKET;
 }
 
 bool Server::listen
@@ -57,7 +63,7 @@ bool Server::__listen
     void
     )
 {
-    if( ::listen(_server_fd, _backlog ) != 0)
+    if( ::listen(_server_socket, _backlog ) != 0)
     {
         // TODO set error message?
         return false;
@@ -73,7 +79,7 @@ bool Server::__listen
     while(true)
     {
         // Accept is a blocking call
-        client_socket = accept( _server_fd, (struct sockaddr* ) &client_address, &addrlen);
+        client_socket = accept( _server_socket, (struct sockaddr* ) &client_address, &addrlen);
 
         if( client_socket != INVALID_SOCKET )
         {

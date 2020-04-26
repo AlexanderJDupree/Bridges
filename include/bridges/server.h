@@ -10,6 +10,7 @@
 
 #include <functional>
 #include <bridges/defs.h>
+#include <bridges/socket.h>
 #include <bridges/request.h>
 #include <bridges/response.h>
 
@@ -34,8 +35,11 @@ public:
 
     Server
         ( 
-        Path    document_root = "/var/www", 
-        int     server_backlog = 5
+        Path    document_root           = DFLT_DOCUMENT_ROOT,
+        size_t  server_backlog          = DFLT_SERVER_BACKLOG,
+        size_t  keep_alive_max_count    = DFLT_KEEP_ALIVE_MAX,
+        size_t  read_timeout_sec        = DFLT_READ_TIMEOUT_SEC,
+        size_t  read_timeout_usec       = DFLT_READ_TIMEOUT_USEC
         );
 
     bool listen
@@ -73,8 +77,11 @@ private:
 
     using Socket_Action = std::function<bool(Socket, struct addrinfo*)>;
 
-    Socket  _server_fd;
-    int     _backlog;
+    Socket  _server_socket;
+    size_t  _backlog;
+    size_t  _keep_alive_max_count;
+    size_t  _read_timeout_sec;
+    size_t  _read_timeout_usec;
     Path    _document_root;
 
 #ifdef _WIN32
