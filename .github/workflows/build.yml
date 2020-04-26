@@ -6,7 +6,7 @@ on: [push, pull_request, release]
 env:
   bridges_app: "build/bin/bridges"
   bridges_test: "build/bin/tests/bridges_tests"
-  artifacts: "bin compile_commands.json install_manifest.txt CMakeFiles/*.log"
+  artifacts: "bin install_manifest.txt CMakeFiles/*.log"
 
 jobs:
   build:
