@@ -20,7 +20,7 @@ static constexpr Method GET     =   0x1 << 0;
 static constexpr Method HEAD    =   0x1 << 1;
 static constexpr Method POST    =   0x1 << 2;
 static constexpr Method PUT     =   0x1 << 3;
-static constexpr Method DELETE  =   0x1 << 4;
+//static constexpr Method DELETE  =   0x1 << 4;
 static constexpr Method CONNECT =   0x1 << 5;
 static constexpr Method OPTIONS =   0x1 << 6;
 static constexpr Method TRACE   =   0x1 << 7;
@@ -74,8 +74,8 @@ private:
     using Socket_Action = std::function<bool(Socket, struct addrinfo*)>;
 
     Socket  _server_fd;
-    Path    _document_root;
     int     _backlog;
+    Path    _document_root;
 
     bool __listen
         (
@@ -93,6 +93,11 @@ private:
         unsigned port, 
         int flags, 
         Socket_Action sa
+        );
+
+    int __close_socket
+        (
+        Socket socket
         );
 };
 

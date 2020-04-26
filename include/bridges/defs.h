@@ -19,10 +19,17 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 #include <string>
+#include <stdint.h>
 
 #ifdef _WIN32 
 
-// TODO add windows support
+#include <WS2tcpip.h>
+
+#pragma comment (lib, "Ws2_32.lib")
+
+#define SHUT_RD   SD_RECEIVE
+#define SHUT_WR	  SD_SEND
+#define SHUT_RDWR SD_BOTH
 
 #else  // Unix
 
@@ -35,7 +42,6 @@
 
 #define INVALID_SOCKET (-1)
 
-#define clear_struct(x) memset(&x, 0, sizeof(x))
 
 #endif  // _WIN32
 
@@ -43,9 +49,11 @@
 // Common Types
 ///////////////////////////////////////////////////////////////////////////////
 
+#define clear_struct(x) memset(&x, 0, sizeof(x))
+
 namespace bridges
 {
-using Method    = u_int16_t;
+using Method    = uint16_t;
 using Path      = std::string;
 using Buffer    = std::string;
 using Socket    = int;

@@ -106,10 +106,10 @@ bool Server::__listen
 
             printf("%s\n", buffer.c_str());
 
-            size_t valwrite = write(client_socket, msg, strlen(msg));
+            size_t valwrite = send(client_socket, msg, strlen(msg), 0);
             if(valwrite < strlen(msg)) { return false; }
 
-            close(client_socket);
+            shutdown(client_socket, SHUT_RDWR);
         }
 
         // TODO: Log connections and requests
@@ -173,7 +173,7 @@ Socket Server::__create_socket
         success = __allow_reuse_address( sockfd ) && socket_action( sockfd, rp);
         if( !success )
         {
-            close( sockfd );
+            __close_socket( sockfd );
             sockfd = INVALID_SOCKET;
         }
     }
@@ -189,7 +189,19 @@ bool Server::__allow_reuse_address
 {
     int yes=1;
 
-    return setsockopt( socket, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof( yes ) ) == 0;
+    return setsockopt( socket, SOL_SOCKET, SO_REUSEADDR, reinterpret_cast<char*>(&yes), sizeof( yes ) ) == 0;
+}
+
+int Server::__close_socket
+    (
+    Socket socket
+    )
+{
+#ifdef _WIN32
+    return closesocket( socket );
+#else 
+    return close( sock );
+#endif
 }
 
 } // namespace bridges
