@@ -31,6 +31,8 @@
 #define SHUT_WR	  SD_SEND
 #define SHUT_RDWR SD_BOTH
 
+using socket_t = SOCKET;
+
 #else  // Unix
 
 #include <netdb.h>
@@ -42,6 +44,7 @@
 
 #define INVALID_SOCKET (-1)
 
+using socket_t = int;
 
 #endif  // _WIN32
 
@@ -56,7 +59,7 @@ namespace bridges
 using Method    = uint16_t;
 using Path      = std::string;
 using Buffer    = std::string;
-using Socket    = int;
+using Socket    = socket_t;
 } // namespace bridges
 
 #endif // BRIDGES_DEFS_H
