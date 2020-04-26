@@ -15,18 +15,17 @@ Server::Server
     Path    document_root, 
     size_t  server_backlog,
     size_t  keep_alive_max_count,
-    size_t  read_timeout_sec,
-    size_t  read_timeout_usec
+    time_t  read_timeout
     )
 : _backlog              ( server_backlog        )
 , _keep_alive_max_count ( keep_alive_max_count  )
-, _read_timeout_sec     ( read_timeout_sec      )
-, _read_timeout_usec    ( read_timeout_usec     )
 , _document_root        ( document_root         )
 {
     _server_socket = INVALID_SOCKET;
+    _server_socket.read_timeout() = read_timeout;
+
 #ifdef _WIN32
-    if (WSAStartup(WS_VERSION, &wsadata) != 0)
+    if (WSAStartup(WS_VERSION, &wsadata) != 0 )
 		{
         // Windows DLL version mismatch, log error
         throw std::exception( "( Bridges ) FATAL: WSAStartup Failed." );
@@ -41,11 +40,7 @@ bool Server::bind_to_port
     int flags
     )
 {
-    _server_socket =__create_socket(host, port, flags, [&](Socket sockfd, struct addrinfo* ai){
-        return bind( sockfd, ai->ai_addr, ai->ai_addrlen ) == 0;
-    } );
-
-    return _server_socket != INVALID_SOCKET;
+    return _server_socket.bind(host, port, flags);
 }
 
 bool Server::listen
@@ -63,7 +58,7 @@ bool Server::__listen
     void
     )
 {
-    if( ::listen(_server_socket, _backlog ) != 0)
+    if( !_server_socket.listen( _backlog ) )
     {
         // TODO set error message?
         return false;
@@ -121,7 +116,7 @@ bool Server::__listen
             size_t valwrite = send(client_socket, msg, strlen(msg), 0);
             if(valwrite < strlen(msg)) { return false; }
 
-            shutdown(client_socket, SHUT_RDWR);
+            client_socket.close();
         }
 
         // TODO: Log connections and requests
@@ -143,79 +138,6 @@ const Path& Server::get_root
     )
 {
     return _document_root;
-}
-
-Socket Server::__create_socket
-    (
-    const char* host, 
-    unsigned port, 
-    int flags, 
-    Socket_Action socket_action
-    )
-{
-    // Get address info
-    struct addrinfo hints;
-    struct addrinfo *result;
-
-    clear_struct(hints);
-
-    hints.ai_family   = AF_UNSPEC;    // Ipv4 or Ipv6
-    hints.ai_socktype = SOCK_STREAM;  // TCP only
-    hints.ai_flags    = flags;
-    hints.ai_protocol = 0;            // Allow any protocol
-
-    auto service = std::to_string(port);
-
-    int rc;
-    if ( (rc = getaddrinfo( host, service.c_str(), &hints, &result )) != 0 ) 
-    {
-        fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(rc));
-    // TODO: log error code?
-        return INVALID_SOCKET;
-    }
-
-    bool success = false;
-    Socket sockfd = INVALID_SOCKET;
-    // Scan through results and attempt to create a socket
-    for ( auto rp = result; rp && !success; rp = rp->ai_next ) 
-    {
-        // Create a socket
-        sockfd = socket(rp->ai_family, rp->ai_socktype, rp->ai_protocol);
-
-        if (sockfd == INVALID_SOCKET) { continue; }
-
-        success = __allow_reuse_address( sockfd ) && socket_action( sockfd, rp);
-        if( !success )
-        {
-            __close_socket( sockfd );
-            sockfd = INVALID_SOCKET;
-        }
-    }
-
-    freeaddrinfo(result);
-    return sockfd;
-}
-
-bool Server::__allow_reuse_address
-    (
-    Socket socket
-    )
-{
-    int yes=1;
-
-    return setsockopt( socket, SOL_SOCKET, SO_REUSEADDR, reinterpret_cast<char*>(&yes), sizeof( yes ) ) == 0;
-}
-
-int Server::__close_socket
-    (
-    Socket socket
-    )
-{
-#ifdef _WIN32
-    return closesocket( socket );
-#else 
-    return close( socket );
-#endif
 }
 
 } // namespace bridges

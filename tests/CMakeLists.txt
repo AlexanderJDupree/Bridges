@@ -8,6 +8,7 @@ set( SOURCE_FILES
     run_tests.cpp
     defs_tests.cpp
     server_tests.cpp
+    socket_tests.cpp
    )
 
 add_executable(bridges_tests ${SOURCE_FILES})

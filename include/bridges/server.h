@@ -9,7 +9,7 @@
 #define BRIDGES_SERVER_H
 
 #include <functional>
-#include <bridges/defs.h>
+
 #include <bridges/socket.h>
 #include <bridges/request.h>
 #include <bridges/response.h>
@@ -38,8 +38,7 @@ public:
         Path    document_root           = DFLT_DOCUMENT_ROOT,
         size_t  server_backlog          = DFLT_SERVER_BACKLOG,
         size_t  keep_alive_max_count    = DFLT_KEEP_ALIVE_MAX,
-        size_t  read_timeout_sec        = DFLT_READ_TIMEOUT_SEC,
-        size_t  read_timeout_usec       = DFLT_READ_TIMEOUT_USEC
+        time_t  read_timeout            = DFLT_READ_TIMEOUT
         );
 
     bool listen
@@ -91,24 +90,6 @@ private:
     bool __listen
         (
         void
-        );
-
-    bool __allow_reuse_address
-        ( 
-        Socket socket
-        );
-
-    Socket __create_socket
-        (
-        const char* host, 
-        unsigned port, 
-        int flags, 
-        Socket_Action sa
-        );
-
-    int __close_socket
-        (
-        Socket socket
         );
 };
 

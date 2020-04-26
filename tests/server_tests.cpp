@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////////////
 //  File    :   server_tests.cpp
-//  Brief   :   Entry Po
+//  Brief   :   Test suite for the Bridges Server
 //  Author  :   Alexander DuPree
 //  License :   MIT
 ///////////////////////////////////////////////////////////////////////////////
@@ -10,23 +10,26 @@
 
 namespace bridges {
 
-TEST(TestServerBindToPort, ValidHostAndPort)
-{
+class ServerTest : public::testing::Test {
+
+protected:
+
     Server server;
+
+};
+
+TEST_F(ServerTest, ValidBindToPort)
+{
     EXPECT_TRUE(server.bind_to_port("localhost", 8000));
 }
 
-TEST(TestServerDocumentRoot, DefaultDocumentRoot)
+TEST_F(ServerTest, DefaultDocumentRoot)
 {
-    Server server;
-
     EXPECT_EQ( server.get_root(), "/var/www" );
 }
 
-TEST(TestServerDocumentRoot, CustomDocumentRoot)
+TEST_F(ServerTest, CustomDocumentRoot)
 {
-    Server server;
-
     EXPECT_EQ( server.set_root("/www2").get_root(), "/www2");
 }
 

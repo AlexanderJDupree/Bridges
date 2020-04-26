@@ -19,9 +19,13 @@
 #define BRIDGES_VERSION "0.1.0"
 
 #define DFLT_KEEP_ALIVE_MAX 5
+
 #define DFLT_READ_TIMEOUT_SEC 5
 #define DFLT_READ_TIMEOUT_USEC 0
+#define DFLT_READ_TIMEOUT { DFLT_READ_TIMEOUT_SEC, DFLT_READ_TIMEOUT_USEC }
+
 #define DFLT_SERVER_BACKLOG 5
+
 #define DFLT_DOCUMENT_ROOT  "/var/www"
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -72,9 +76,11 @@ using socket_t = int;
 
 namespace bridges
 {
+
 using Method    = uint16_t;
 using Path      = std::string;
 using Buffer    = std::string;
+
 } // namespace bridges
 
 #endif // BRIDGES_DEFS_H
