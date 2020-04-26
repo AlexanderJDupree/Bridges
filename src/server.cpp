@@ -16,8 +16,8 @@ Server::Server
     int server_backlog
     )
 : _server_fd        ( INVALID_SOCKET )
-, _document_root    ( document_root  )
 , _backlog          ( server_backlog )
+, _document_root    ( document_root  )
 {
 
 }
@@ -200,7 +200,7 @@ int Server::__close_socket
 #ifdef _WIN32
     return closesocket( socket );
 #else 
-    return close( sock );
+    return close( socket );
 #endif
 }
 
