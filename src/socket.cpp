@@ -20,6 +20,7 @@ Socket::Socket
 {
 }
 
+
 time_t& Socket::read_timeout
     (
     void
@@ -27,6 +28,7 @@ time_t& Socket::read_timeout
 {
     return _read_timeout;
 }
+
 
 bool Socket::bind
     (
@@ -42,6 +44,7 @@ bool Socket::bind
     return _socket != INVALID_SOCKET;
 }
 
+
 bool Socket::listen
     (
     size_t backlog
@@ -49,6 +52,21 @@ bool Socket::listen
 {
     return ::listen(_socket, backlog) == 0;
 }
+
+
+bool Socket::accept
+    (
+    Socket listener
+    )
+{
+    //struct sockaddr_storage client_address;
+    //socklen_t addrlen = sizeof( client_address );
+
+    _socket = ::accept( listener, nullptr, nullptr );
+
+    return _socket != INVALID_SOCKET;
+}
+
 
 bool Socket::close
     (
@@ -58,6 +76,7 @@ bool Socket::close
     return __close_socket(_socket) == 0;
 }
 
+
 bool Socket::shutdown
     (
     int how
@@ -65,6 +84,68 @@ bool Socket::shutdown
 {
     return ::shutdown(_socket, how) == 0;
 }
+
+
+bool Socket::is_readable
+    (
+    void
+    )
+{
+    return poll_socket(_socket, _read_timeout, SELECT_MODE::READ) > 0;
+}
+
+
+bool Socket::write_all
+    (
+    const Buffer& msg
+    )
+{
+    ssize_t sent = 0;
+    ssize_t total = msg.length();
+    const char* buffer = msg.c_str();
+
+
+    for( ssize_t i = 0; i >= 0 && sent < total; )
+    {
+        i = send( _socket, buffer + i, total - sent, 0);
+        sent += i;
+    }
+    return (sent < total) ? false : true;
+}
+
+
+ssize_t Socket::read
+    (
+    char* buffer, 
+    size_t size,
+    int flags
+    )
+{
+    return recv( _socket, buffer, size, flags);
+}
+
+
+bool Socket::read_line( Buffer& buffer, bool append)
+{
+    char    byte;
+    size_t  size = buffer.size();
+
+    if(!append) 
+    {
+        buffer.clear();
+    }
+
+    // Read a byte at a time until newline
+    bool line_end = false;
+    while(!line_end && read(&byte, 1, 0) > 0)
+    {
+        buffer += byte;
+        line_end = ( byte == '\n' );
+    }
+
+    return buffer.size() > size;
+}
+
 
 socket_t Socket::__create_socket
     (

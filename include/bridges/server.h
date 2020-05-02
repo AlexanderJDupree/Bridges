@@ -91,6 +91,11 @@ private:
         (
         void
         );
+
+    bool __handle_request
+        ( 
+        Socket client 
+        );
 };
 
     

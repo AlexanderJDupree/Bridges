@@ -15,6 +15,7 @@
 namespace bridges 
 {
 
+
 struct time_t  {
     size_t sec;
     size_t usec;
@@ -28,6 +29,17 @@ constexpr inline bool operator==
 {
     return std::tie(lhs.sec, lhs.usec) == std::tie(rhs.sec, lhs.usec);
 }
+
+enum class SELECT_MODE {
+    READ,
+    WRITE,
+    ERROR
+};
+
+int poll_socket( socket_t socket, time_t timeout, SELECT_MODE mode);
+
+bool ends_with(const std::string& str, const std::string& suffix);
+bool starts_with(const std::string& str, const std::string& prefix);
 
 }
 #endif // BRIDGES_COMMON_H

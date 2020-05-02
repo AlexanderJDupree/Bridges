@@ -18,6 +18,9 @@
 
 #define BRIDGES_VERSION "0.1.0"
 
+// Max request length is 8KB
+#define BRIDGES_HTTP_REQUEST_MAX_LENGTH 8192
+
 #define DFLT_KEEP_ALIVE_MAX 5
 
 #define DFLT_READ_TIMEOUT_SEC 5

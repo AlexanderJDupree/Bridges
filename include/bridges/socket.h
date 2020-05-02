@@ -23,8 +23,8 @@ public:
 
     Socket
         (
-        socket_t    socket              = INVALID_SOCKET,
-        time_t      read_timeout        = DFLT_READ_TIMEOUT
+        socket_t    socket          = INVALID_SOCKET,
+        time_t      read_timeout    = DFLT_READ_TIMEOUT
         );
 
     ~Socket() = default;
@@ -41,6 +41,11 @@ public:
         size_t backlog
         );
 
+    bool accept
+        (
+        Socket listener
+        );
+
     bool close
         (
         void
@@ -50,11 +55,32 @@ public:
         (
         int how
         );
+    
+    bool is_readable
+        (
+        void
+        );
+
+    bool write_all(const Buffer& buffer);
+
+    ssize_t read
+        ( 
+        char* buffer, 
+        size_t size,
+        int flags
+        );
+
+    bool read_line
+        ( 
+        Buffer& buffer,
+        bool append = true
+        );
 
     time_t& read_timeout
         (
         void
         );
+
 
     operator socket_t() const { return _socket; }
 
