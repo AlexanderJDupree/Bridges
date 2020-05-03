@@ -10,6 +10,7 @@
 
 namespace bridges
 {
+
 class Response
 {
 public:

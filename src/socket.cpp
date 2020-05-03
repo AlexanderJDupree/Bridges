@@ -6,6 +6,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 #include <bridges/socket.h>
+#include <bridges/system.h>
 
 namespace bridges
 {
@@ -38,7 +39,7 @@ bool Socket::bind
     )
 {
     _socket =__create_socket(host, port, flags, [&](socket_t sock, struct addrinfo* ai){
-        return ::bind( sock, ai->ai_addr, ai->ai_addrlen ) == 0;
+        return system.bind( sock, ai->ai_addr, ai->ai_addrlen ) == 0;
     } );
 
     return _socket != INVALID_SOCKET;
@@ -59,6 +60,7 @@ bool Socket::accept
     Socket listener
     )
 {
+    //TODO: Store client address information
     //struct sockaddr_storage client_address;
     //socklen_t addrlen = sizeof( client_address );
 

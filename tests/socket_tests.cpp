@@ -5,8 +5,9 @@
 //  License :   MIT
 ///////////////////////////////////////////////////////////////////////////////
 
-#include <bridges/socket.h>
 #include <gtest/gtest.h>
+
+#include <bridges/socket.h>
 
 namespace bridges {
 
@@ -19,7 +20,6 @@ protected:
     }
 
     Socket socket;
-
 };
 
 TEST_F(SocketTest, DefaultConstruction) 

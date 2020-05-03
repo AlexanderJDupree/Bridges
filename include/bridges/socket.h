@@ -92,6 +92,7 @@ private:
     socket_t    _socket;
     time_t      _read_timeout;
 
+
     static socket_t __create_socket
         (
         const char* host,

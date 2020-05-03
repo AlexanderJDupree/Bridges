@@ -8,11 +8,11 @@ add_library(bridges STATIC
             common.cpp
            )
 
-add_executable(run_bridges 
+add_executable(Bridges 
                main.cpp
               )
 
-target_link_libraries(run_bridges bridges)
+target_link_libraries(Bridges bridges)
 
-install(TARGETS run_bridges DESTINATION ${BRIDGES_BIN})
+install(TARGETS Bridges DESTINATION ${BRIDGES_BIN})
 install(TARGETS bridges DESTINATION lib)

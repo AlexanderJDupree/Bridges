@@ -5,6 +5,8 @@
 //  License :   MIT
 ///////////////////////////////////////////////////////////////////////////////
 
+// TODO: create a type that encapsulates these possible flags
+
 // Possible values for `ai_flags' field in `addrinfo' structure.  
 //# define AI_PASSIVE	0x0001	// Socket address is intended for `bind'.  
 //# define AI_CANONNAME	0x0002	// Request for canonical name.  

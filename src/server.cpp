@@ -93,7 +93,6 @@ bool Server::__listen
 
     while(client_socket.accept(_server_socket))
     {
-        printf("\n");
         if( client_socket != INVALID_SOCKET )
         {
             __handle_request( client_socket );

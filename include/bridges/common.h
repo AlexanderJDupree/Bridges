@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////////////
 //  File    :   common.h
-//  Brief   :   common functions and details 
+//  Brief   :   common functions and definitions
 //  Author  :   Alexander DuPree
 //  License :   MIT
 ///////////////////////////////////////////////////////////////////////////////
@@ -9,7 +9,6 @@
 #define BRIDGES_COMMON_H
 
 #include <tuple>
-
 #include <bridges/defs.h>
 
 namespace bridges 
@@ -38,5 +37,5 @@ enum class SELECT_MODE {
 
 int poll_socket( socket_t socket, time_t timeout, SELECT_MODE mode);
 
-}
+}// namespace bridges
 #endif // BRIDGES_COMMON_H
