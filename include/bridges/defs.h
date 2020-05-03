@@ -54,6 +54,7 @@
 
 #define WS_VERSION MAKEWORD(2,0)	/* Requested Windows Socket Verion */
 
+using ssize_t  = long long;
 using socket_t = SOCKET;
 
 #else  // Unix

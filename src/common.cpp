@@ -24,11 +24,11 @@ int nfds = socket + 1; // See select manual for derivation of this value
 
 switch ( mode )
     {
-    case SELECT_MODE::READ :
+    case SELECT_MODE::READ_FDS:
         return select(nfds, &fds, NULL, NULL, reinterpret_cast<timeval*>(&timeout));
-    case SELECT_MODE::WRITE :
+    case SELECT_MODE::WRITE_FDS:
         return select(nfds, nullptr, &fds, nullptr, reinterpret_cast<timeval*>(&timeout));
-    case SELECT_MODE::ERROR :
+    case SELECT_MODE::ERROR_FDS:
         return select(nfds, nullptr, nullptr, &fds, reinterpret_cast<timeval*>(&timeout));
     default:
         return -1;

@@ -31,9 +31,9 @@ constexpr inline bool operator==
 }
 
 enum class SELECT_MODE {
-    READ,
-    WRITE,
-    ERROR
+    READ_FDS,
+    WRITE_FDS,
+    ERROR_FDS
 };
 
 int poll_socket( socket_t socket, time_t timeout, SELECT_MODE mode);

@@ -91,7 +91,7 @@ bool Socket::is_readable
     void
     )
 {
-    return poll_socket(_socket, _read_timeout, SELECT_MODE::READ) > 0;
+    return poll_socket(_socket, _read_timeout, SELECT_MODE::READ_FDS) > 0;
 }
 
 
