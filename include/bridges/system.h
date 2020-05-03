@@ -14,11 +14,6 @@
 #ifndef BRIDGES_SYSTEM_H
 #define BRIDGES_SYSTEM_H
 
-
-#if defined(BRIDGES_TESTS)
-#include <mocks.h>
-#else
-
 #include <bridges/defs.h>
 
 namespace bridges
@@ -38,5 +33,4 @@ static System_Interface system;
     
 } // namespace bridges
 
-#endif // BRIDGES_TESTS
 #endif // BRIDGES_SYSTEM_H

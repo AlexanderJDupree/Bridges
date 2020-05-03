@@ -12,6 +12,8 @@
 #ifndef BRIDGES_TESTS_MOCKS_H
 #define BRIDGES_TESTS_MOCKS_H
 
+// TODO: Reaseach better ways to mock system calls
+
 #include <bridges/defs.h>
 
 namespace bridges
@@ -21,9 +23,12 @@ class Mock_System_Interface
 {
 public:
 
-    int bind(int sockfd, const struct sockaddr* addr, socklen_t addrlen) {
-        return ::bind(sockfd, addr, addrlen);
-    }
+    struct __bind {
+        int operator()(int sockfd, const struct sockaddr* addr, socklen_t addrlen){
+            return ::bind(sockfd, addr, addrlen);
+        }
+
+    } bind;
 
 };
 

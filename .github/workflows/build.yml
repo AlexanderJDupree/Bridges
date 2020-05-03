@@ -4,8 +4,8 @@ name: Bridges CI/CD
 on: [push, pull_request, release]
 
 env:
-  bridges_app: "build/bin/run_bridges"
-  bridges_test: "build/bin/bridges_tests"
+  bridges_app: "build/bin/Bridges"
+  bridges_test: "build/bin/test_bridges"
   artifacts: "bin install_manifest.txt CMakeFiles/*.log"
 
 jobs:
