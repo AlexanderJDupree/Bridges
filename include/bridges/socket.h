@@ -73,7 +73,8 @@ public:
     bool read_line
         ( 
         Buffer& buffer,
-        bool append = true
+        bool append = false,
+        bool crlf   = true
         );
 
     time_t& read_timeout

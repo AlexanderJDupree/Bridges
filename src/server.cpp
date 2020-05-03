@@ -108,11 +108,12 @@ bool Server::__listen
 bool Server::__handle_request( Socket client)
 {
     Buffer buffer;
-    buffer.reserve(1024); // Start with 1kb
+    size_t nbytes = 0;
 
-    while( buffer != "\r\n" && buffer.size() <= BRIDGES_HTTP_REQUEST_MAX_LENGTH && client.read_line( buffer, false) )
+    while( nbytes <= BRIDGES_HTTP_REQUEST_MAX_LENGTH && client.read_line( buffer ) )
     {
-        printf("%s", buffer.c_str());
+        nbytes += buffer.size();
+        printf("%s\n", buffer.c_str());
     }
 
     Buffer msg = "HTTP/1.1 200 OK\nServer: bridges-0.1.0a\nContent-Type: text/plain\nContent-Length: 12\n\nHello world!\n";

@@ -125,25 +125,25 @@ ssize_t Socket::read
 }
 
 
-bool Socket::read_line( Buffer& buffer, bool append)
+bool Socket::read_line( Buffer& buffer, bool append, bool crlf)
 {
-    char    byte;
-    size_t  size = buffer.size();
-
     if(!append) 
     {
         buffer.clear();
     }
 
+    char    byte = '\0';
+    size_t  size = buffer.size();
+
     // Read a byte at a time until newline
-    bool line_end = false;
-    while(!line_end && read(&byte, 1, 0) > 0)
+    while(read(&byte, 1, 0) > 0 && byte != '\n')
     {
         buffer += byte;
-        line_end = ( byte == '\n' );
     }
 
-    return buffer.size() > size;
+    if( crlf && !buffer.empty() ) { buffer.pop_back(); } // Discard '\r'
+
+    return buffer.size() > size; // Read occured
 }
 
 

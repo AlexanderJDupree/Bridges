@@ -38,8 +38,5 @@ enum class SELECT_MODE {
 
 int poll_socket( socket_t socket, time_t timeout, SELECT_MODE mode);
 
-bool ends_with(const std::string& str, const std::string& suffix);
-bool starts_with(const std::string& str, const std::string& prefix);
-
 }
 #endif // BRIDGES_COMMON_H
