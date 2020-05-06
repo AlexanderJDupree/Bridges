@@ -5,6 +5,10 @@
 //  License :   MIT
 ///////////////////////////////////////////////////////////////////////////////
 
+///////////////////////////////////////////////////////////////////////////////
+// Configuration
+///////////////////////////////////////////////////////////////////////////////
+
 #ifndef BRIDGES_DEFS_H
 #define BRIDGES_DEFS_H
 
@@ -14,12 +18,29 @@
 
 #define BRIDGES_VERSION "0.1.0"
 
+// Max request length is 8KB
+#define BRIDGES_HTTP_REQUEST_MAX_LENGTH 8192
+
+#define DFLT_KEEP_ALIVE_MAX 5
+
+#define DFLT_READ_TIMEOUT_SEC 5
+#define DFLT_READ_TIMEOUT_USEC 0
+#define DFLT_READ_TIMEOUT { DFLT_READ_TIMEOUT_SEC, DFLT_READ_TIMEOUT_USEC }
+
+#define DFLT_SERVER_BACKLOG 5
+
+#define DFLT_DOCUMENT_ROOT  "/var/www"
+
 ///////////////////////////////////////////////////////////////////////////////
 // General Includes
 ///////////////////////////////////////////////////////////////////////////////
 
 #include <string>
 #include <stdint.h>
+
+///////////////////////////////////////////////////////////////////////////////
+// Platform Specific Includes & Typedefs
+///////////////////////////////////////////////////////////////////////////////
 
 #ifdef _WIN32 
 
@@ -33,6 +54,7 @@
 
 #define WS_VERSION MAKEWORD(2,0)	/* Requested Windows Socket Verion */
 
+using ssize_t  = long long;
 using socket_t = SOCKET;
 
 #else  // Unix
@@ -51,17 +73,18 @@ using socket_t = int;
 #endif  // _WIN32
 
 ///////////////////////////////////////////////////////////////////////////////
-// Common Types
+// Common Types & Utilties
 ///////////////////////////////////////////////////////////////////////////////
 
 #define clear_struct(x) memset(&x, 0, sizeof(x))
 
 namespace bridges
 {
+
 using Method    = uint16_t;
 using Path      = std::string;
 using Buffer    = std::string;
-using Socket    = socket_t;
+
 } // namespace bridges
 
 #endif // BRIDGES_DEFS_H
