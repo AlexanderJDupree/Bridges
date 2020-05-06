@@ -133,10 +133,11 @@ bool Socket::read_line( Buffer& buffer, bool append, bool crlf)
     }
 
     char    byte = '\0';
+    size_t  nbytes = 0;
     size_t  size = buffer.size();
 
     // Read a byte at a time until newline
-    while(read(&byte, 1, 0) > 0 && byte != '\n')
+    while( read(&byte, 1, 0) > 0 && ++nbytes <= BRIDGES_HTTP_MAX_LINE_LENGTH && byte != '\n' )
     {
         buffer += byte;
     }

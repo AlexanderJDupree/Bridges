@@ -8,24 +8,12 @@
 #ifndef BRIDGES_SERVER_H
 #define BRIDGES_SERVER_H
 
-#include <functional>
-
 #include <bridges/socket.h>
 #include <bridges/request.h>
 #include <bridges/response.h>
 
 namespace bridges
 {
-
-static constexpr Method GET     =   0x1 << 0;
-static constexpr Method HEAD    =   0x1 << 1;
-static constexpr Method POST    =   0x1 << 2;
-static constexpr Method PUT     =   0x1 << 3;
-//static constexpr Method DELETE  =   0x1 << 4;
-static constexpr Method CONNECT =   0x1 << 5;
-static constexpr Method OPTIONS =   0x1 << 6;
-static constexpr Method TRACE   =   0x1 << 7;
-static constexpr Method PATCH   =   0x1 << 8;
 
 using Handler = std::function<Response(const Request&)>;
 
@@ -72,6 +60,12 @@ public:
         Handler handler
         );
 
+    bool dispatch_request
+        (
+        Socket client,
+        const Request& request
+        );
+
 private:
 
     using Socket_Action = std::function<bool(Socket, struct addrinfo*)>;
@@ -95,6 +89,11 @@ private:
     bool __handle_request
         ( 
         Socket client 
+        );
+
+    Maybe<Request> __read_request
+        (
+        Socket client
         );
 };
 

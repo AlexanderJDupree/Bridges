@@ -9,6 +9,8 @@
 #ifndef BRIDGES_REQUEST_H
 #define BRIDGES_REQUEST_H
 
+#include <bridges/defs.h>
+
 namespace bridges
 {
 
@@ -16,7 +18,11 @@ class Request
 {
 public:
 
-private:
+    Method  method;
+    Headers headers;
+    String  body;
+    size_t  size;
+    Protocol_Version version;
 
 };
 

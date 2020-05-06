@@ -6,6 +6,7 @@ add_library(bridges STATIC
             server.cpp
             socket.cpp
             common.cpp
+            request.cpp
            )
 
 add_executable(run_bridges 
