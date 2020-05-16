@@ -128,6 +128,7 @@ Maybe<Request> Server::__read_request
     (
     Socket client
     )
+// TODO: Review Compliance with https://tools.ietf.org/html/rfc7230#section-3
 {
     Buffer  buffer;
     Request req;

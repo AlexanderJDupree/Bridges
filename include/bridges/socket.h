@@ -16,7 +16,6 @@
 namespace bridges
 {
 
-
 class Socket
 {
 public:

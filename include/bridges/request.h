@@ -9,7 +9,8 @@
 #ifndef BRIDGES_REQUEST_H
 #define BRIDGES_REQUEST_H
 
-#include <bridges/defs.h>
+#include <bridges/common.h>
+#include <bridges/headers.h>
 
 namespace bridges
 {
@@ -17,7 +18,7 @@ namespace bridges
 class Request
 {
 public:
-        
+
     Method  method  = INVALID;
     URI     target  = "";
     Headers headers = {};
