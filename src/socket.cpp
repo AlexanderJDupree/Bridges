@@ -160,7 +160,7 @@ socket_t Socket::__create_socket
     struct addrinfo hints;
     struct addrinfo *result;
 
-    clear_struct(hints);
+    CLEAR_STRUCT(hints);
 
     hints.ai_family   = AF_UNSPEC;    // Ipv4 or Ipv6
     hints.ai_socktype = SOCK_STREAM;  // TCP only

@@ -15,7 +15,6 @@
 namespace bridges 
 {
 
-
 struct time_t  {
     size_t sec;
     size_t usec;
@@ -36,7 +35,39 @@ enum class SELECT_MODE {
     ERROR_FDS
 };
 
-int poll_socket( socket_t socket, time_t timeout, SELECT_MODE mode);
+int poll_socket
+    ( 
+    socket_t socket, 
+    time_t timeout, 
+    SELECT_MODE mode
+    );
+
+bool process_request_line
+    (
+    const String& line,
+    Request& req 
+    );
+
+bool process_header
+    (
+    const String& header,
+    Request& req 
+    );
+
+bool has_body
+    (
+    const Request& req
+    );
+
+Method read_method
+    (
+    const String& method
+    );
+
+Protocol_Version read_http_version
+    (
+    const String& version
+    );
 
 }
 #endif // BRIDGES_COMMON_H

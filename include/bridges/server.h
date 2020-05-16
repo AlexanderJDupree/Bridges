@@ -68,8 +68,6 @@ public:
 
 private:
 
-    using Socket_Action = std::function<bool(Socket, struct addrinfo*)>;
-
     Socket  _server_socket;
     size_t  _backlog;
     size_t  _keep_alive_max_count;
@@ -95,6 +93,7 @@ private:
         (
         Socket client
         );
+
 };
 
     

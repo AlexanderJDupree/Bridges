@@ -129,13 +129,24 @@ Maybe<Request> Server::__read_request
     Socket client
     )
 {
-    // process request line >>= process headers >>= process body
-    Buffer buffer;
-    while( client.read_line( buffer ) )
-    {
-        printf("%s\n", buffer.c_str() );
-    }
+    Buffer  buffer;
+    Request req;
 
+    if( client.read_line( buffer) && process_request_line( buffer, req))
+    {
+        size_t nbytes = buffer.size();
+        while( client.read_line( buffer ) && process_header( buffer, req) && nbytes < BRIDGES_HTTP_MAX_REQUEST_SIZE)
+        {
+            nbytes += buffer.size();
+        }
+
+        if( has_body( req ))
+        {
+            // Process body
+        }
+        // verify headers first??
+        return req;
+    }
     return Nothing;
 }
 

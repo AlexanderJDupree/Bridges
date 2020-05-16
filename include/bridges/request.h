@@ -17,13 +17,12 @@ namespace bridges
 class Request
 {
 public:
-
-    Method  method;
-    Headers headers;
-    String  body;
-    size_t  size;
-    Protocol_Version version;
-
+        
+    Method  method  = INVALID;
+    URI     target  = "";
+    Headers headers = {};
+    String  body    = "";
+    Protocol_Version version = {0,0};
 };
 
 } // namespace bridges
