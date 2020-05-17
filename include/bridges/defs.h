@@ -46,7 +46,7 @@
 #include <algorithm>
 #include <functional>
 
-#include "strtk.hpp" // TODO: Abstract this dependency behind an API
+#include "strtk/strtk.hpp" // TODO: Abstract this dependency behind an API
 
 ///////////////////////////////////////////////////////////////////////////////
 // Platform Specific Includes & Typedefs
