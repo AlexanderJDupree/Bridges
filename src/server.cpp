@@ -109,7 +109,7 @@ bool Server::__handle_request( Socket client)
         return dispatch_request( client, req.value() );
     }
 
-    Buffer msg = "HTTP/1.1 400 Bad Request\nServer: bridges-0.1.0a\nContent-Type: text/plain\nContent-Length: 24\n\nSo. . . That didn't work\n";
+    Buffer msg = "HTTP/1.1 400 Bad Request\nServer: bridges-0.2.0\nContent-Type: text/plain\nContent-Length: 24\n\nSo. . . That didn't work\n";
     return client.write_all(msg) && client.close();
 }
 
@@ -119,7 +119,7 @@ bool Server::dispatch_request
     const Request& request
     )
 {
-    Buffer msg = "HTTP/1.1 200 OK\nServer: bridges-0.1.0a\nContent-Type: text/plain\nContent-Length: 12\n\nHello world!\n"; 
+    Buffer msg = "HTTP/1.1 200 OK\nServer: bridges-0.2.0\nContent-Type: text/plain\nContent-Length: 12\n\nHello world!\n"; 
 
     return client.write_all(msg) && client.close();
 }
