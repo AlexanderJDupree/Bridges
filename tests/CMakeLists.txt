@@ -6,7 +6,6 @@ include_directories(../third_party/googletest/googletest/include)
 
 set( SOURCE_FILES 
     run_tests.cpp
-    defs_tests.cpp
     server_tests.cpp
     socket_tests.cpp
     parser_tests.cpp
