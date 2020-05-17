@@ -133,10 +133,11 @@ bool Socket::read_line( Buffer& buffer, bool append, bool crlf)
     }
 
     char    byte = '\0';
+    size_t  nbytes = 0;
     size_t  size = buffer.size();
 
     // Read a byte at a time until newline
-    while(read(&byte, 1, 0) > 0 && byte != '\n')
+    while( read(&byte, 1, 0) > 0 && ++nbytes <= BRIDGES_HTTP_MAX_LINE_LENGTH && byte != '\n' )
     {
         buffer += byte;
     }
@@ -159,7 +160,7 @@ socket_t Socket::__create_socket
     struct addrinfo hints;
     struct addrinfo *result;
 
-    clear_struct(hints);
+    CLEAR_STRUCT(hints);
 
     hints.ai_family   = AF_UNSPEC;    // Ipv4 or Ipv6
     hints.ai_socktype = SOCK_STREAM;  // TCP only

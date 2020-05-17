@@ -5,13 +5,10 @@
 //  License :   MIT
 ///////////////////////////////////////////////////////////////////////////////
 
-#include <sstream>
-
 #include <bridges/server.h>
 
 namespace bridges
 {
-
 
 Server::Server
     (
@@ -107,18 +104,51 @@ bool Server::__listen
 
 bool Server::__handle_request( Socket client)
 {
-    Buffer buffer;
-    size_t nbytes = 0;
-
-    while( nbytes <= BRIDGES_HTTP_REQUEST_MAX_LENGTH && client.read_line( buffer ) )
+    if ( Maybe<Request> req = __read_request( client ) )
     {
-        nbytes += buffer.size();
-        printf("%s\n", buffer.c_str());
+        return dispatch_request( client, req.value() );
     }
 
-    Buffer msg = "HTTP/1.1 200 OK\nServer: bridges-0.1.0a\nContent-Type: text/plain\nContent-Length: 12\n\nHello world!\n";
+    Buffer msg = "HTTP/1.1 400 Bad Request\nServer: bridges-0.1.0a\nContent-Type: text/plain\nContent-Length: 24\n\nSo. . . That didn't work\n";
+    return client.write_all(msg) && client.close();
+}
+
+bool Server::dispatch_request
+    (
+    Socket client,
+    const Request& request
+    )
+{
+    Buffer msg = "HTTP/1.1 200 OK\nServer: bridges-0.1.0a\nContent-Type: text/plain\nContent-Length: 12\n\nHello world!\n"; 
 
     return client.write_all(msg) && client.close();
+}
+
+Maybe<Request> Server::__read_request
+    (
+    Socket client
+    )
+// TODO: Review Compliance with https://tools.ietf.org/html/rfc7230#section-3
+{
+    Buffer  buffer;
+    Request req;
+
+    if( client.read_line( buffer) && process_request_line( buffer, req))
+    {
+        size_t nbytes = buffer.size();
+        while( client.read_line( buffer ) && process_header( buffer, req) && nbytes < BRIDGES_HTTP_MAX_REQUEST_SIZE)
+        {
+            nbytes += buffer.size();
+        }
+
+        if( has_body( req ))
+        {
+            // Process body
+        }
+        // verify headers first??
+        return req;
+    }
+    return Nothing;
 }
 
 } // namespace bridges

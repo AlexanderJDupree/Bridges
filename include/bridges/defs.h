@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////////
-//  File    :   defs.h
+//  File    :   defs.h ( precompiled-header )
 //  Brief   :   Common includes and constants defined for the project
 //  Author  :   Alexander DuPree
 //  License :   MIT
@@ -18,8 +18,8 @@
 
 #define BRIDGES_VERSION "0.1.0"
 
-// Max request length is 8KB
-#define BRIDGES_HTTP_REQUEST_MAX_LENGTH 8192
+#define BRIDGES_HTTP_MAX_LINE_LENGTH  8192
+#define BRIDGES_HTTP_MAX_REQUEST_SIZE 65536
 
 #define DFLT_KEEP_ALIVE_MAX 5
 
@@ -35,8 +35,18 @@
 // General Includes
 ///////////////////////////////////////////////////////////////////////////////
 
+#include <map>
+#include <tuple>
 #include <string>
-#include <stdint.h>
+#include <cctype>
+#include <vector>
+#include <cstdint>
+#include <iterator>
+#include <optional>
+#include <algorithm>
+#include <functional>
+
+#include "strtk/strtk.hpp" // TODO: Abstract this dependency behind an API
 
 ///////////////////////////////////////////////////////////////////////////////
 // Platform Specific Includes & Typedefs
@@ -53,6 +63,8 @@
 #define SHUT_RDWR SD_BOTH
 
 #define WS_VERSION MAKEWORD(2,0)	/* Requested Windows Socket Verion */
+
+#undef DELETE
 
 using ssize_t  = long long;
 using socket_t = SOCKET;
@@ -71,20 +83,5 @@ using socket_t = SOCKET;
 using socket_t = int;
 
 #endif  // _WIN32
-
-///////////////////////////////////////////////////////////////////////////////
-// Common Types & Utilties
-///////////////////////////////////////////////////////////////////////////////
-
-#define clear_struct(x) memset(&x, 0, sizeof(x))
-
-namespace bridges
-{
-
-using Method    = uint16_t;
-using Path      = std::string;
-using Buffer    = std::string;
-
-} // namespace bridges
 
 #endif // BRIDGES_DEFS_H
