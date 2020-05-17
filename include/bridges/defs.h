@@ -64,6 +64,8 @@
 
 #define WS_VERSION MAKEWORD(2,0)	/* Requested Windows Socket Verion */
 
+#undef DELETE
+
 using ssize_t  = long long;
 using socket_t = SOCKET;
 
