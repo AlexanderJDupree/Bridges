@@ -9,21 +9,18 @@
 #ifndef BRIDGES_REQUEST_H
 #define BRIDGES_REQUEST_H
 
-#include <bridges/common.h>
-#include <bridges/headers.h>
+#include <bridges/http_message.h>
 
 namespace bridges
 {
 
-class Request
+class Request : public HTTP_Message
 {
 public:
 
     Method  method  = INVALID;
     URI     target  = "";
-    Headers headers = {};
-    String  body    = "";
-    Protocol_Version version = {0,0};
+
 };
 
 } // namespace bridges

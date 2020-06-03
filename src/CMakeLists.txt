@@ -13,6 +13,7 @@ add_executable(run_bridges
                main.cpp
               )
 
+target_link_libraries(bridges fmt::fmt)
 target_link_libraries(run_bridges bridges)
 
 install(TARGETS bridges DESTINATION lib)

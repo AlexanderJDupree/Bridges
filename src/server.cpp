@@ -90,7 +90,6 @@ bool Server::__listen
 
     while(client_socket.accept(_server_socket))
     {
-        printf("\n");
         if( client_socket != INVALID_SOCKET )
         {
             __handle_request( client_socket );
@@ -109,6 +108,7 @@ bool Server::__handle_request( Socket client)
         return dispatch_request( client, req.value() );
     }
 
+    // client.send_response( bad_request_handler() );
     Buffer msg = "HTTP/1.1 400 Bad Request\nServer: bridges-0.2.0\nContent-Type: text/plain\nContent-Length: 24\n\nSo. . . That didn't work\n";
     return client.write_all(msg) && client.close();
 }
@@ -119,6 +119,10 @@ bool Server::dispatch_request
     const Request& request
     )
 {
+    // Lookup handlers
+
+    // client.send_response( handler(request) );
+    
     Buffer msg = "HTTP/1.1 200 OK\nServer: bridges-0.2.0\nContent-Type: text/plain\nContent-Length: 12\n\nHello world!\n"; 
 
     return client.write_all(msg) && client.close();

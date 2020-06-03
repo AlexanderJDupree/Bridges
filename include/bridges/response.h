@@ -8,11 +8,17 @@
 #ifndef BRIDGES_RESPONSE_H
 #define BRIDGES_RESPONSE_H
 
+#include <bridges/http_status.h>
+#include <bridges/http_message.h>
+
 namespace bridges
 {
-class Response
+
+class Response : public HTTP_Message
 {
 public:
+
+    Status status = Status::OK;
 
 private:
 

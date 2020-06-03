@@ -15,7 +15,7 @@ int poll_socket
     ( 
     socket_t socket, 
     time_t timeout, 
-    SELECT_MODE mode
+    Polling_Mode mode
     )
 {
 // TODO: poll() or select()? Or make configurable 
@@ -28,12 +28,15 @@ int nfds = socket + 1; // See select manual for derivation of this value
 
 switch ( mode )
     {
-    case SELECT_MODE::READ_FDS:
+    case Polling_Mode::Read:
         return select(nfds, &fds, NULL, NULL, reinterpret_cast<timeval*>(&timeout));
-    case SELECT_MODE::WRITE_FDS:
+
+    case Polling_Mode::Write:
         return select(nfds, nullptr, &fds, nullptr, reinterpret_cast<timeval*>(&timeout));
-    case SELECT_MODE::ERROR_FDS:
+
+    case Polling_Mode::Error:
         return select(nfds, nullptr, nullptr, &fds, reinterpret_cast<timeval*>(&timeout));
+
     default:
         return -1;
     }

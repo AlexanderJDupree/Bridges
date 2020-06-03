@@ -80,17 +80,17 @@ constexpr inline bool operator==
 // Shared Functions
 ///////////////////////////////////////////////////////////////////////////////
 
-enum class SELECT_MODE {
-    READ_FDS,
-    WRITE_FDS,
-    ERROR_FDS
+enum class Polling_Mode {
+    Read,
+    Write,
+    Error
 };
 
 int poll_socket
     ( 
     socket_t socket, 
     time_t timeout, 
-    SELECT_MODE mode
+    Polling_Mode mode
     );
 
 // TODO: Move all these parsing funcitons into a seperate file??

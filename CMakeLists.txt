@@ -19,10 +19,14 @@ set(THIRD_PARTY_INCLUDE ${PROJECT_SOURCE_DIR}/third_party)
 
 add_definitions( -Dstrtk_no_tr1_or_boost )
 
-include_directories(${BRIDGES_INCLUDE} ${THIRD_PARTY_INCLUDE})
+include_directories( ${BRIDGES_INCLUDE} 
+					 ${THIRD_PARTY_INCLUDE}/strtk 
+					 ${THIRD_PARTY_INCLUDE}/fmt/include
+				   )
 
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 
 add_subdirectory(src)
 add_subdirectory(tests)
 add_subdirectory(third_party/googletest)
+add_subdirectory(third_party/fmt)
