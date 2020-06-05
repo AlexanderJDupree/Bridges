@@ -9,9 +9,7 @@
 #ifndef BRIDGES_SOCKET_H
 #define BRIDGES_SOCKET_H
 
-#include <functional>
-
-#include <bridges/common.h>
+#include <bridges/types.h>
 
 namespace bridges
 {

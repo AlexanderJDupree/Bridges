@@ -6,6 +6,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 #include <bridges/socket.h>
+#include <bridges/utility.h>
 #include <bridges/response.h>
 
 namespace bridges
@@ -92,32 +93,27 @@ bool Socket::is_readable
     void
     )
 {
-    return poll_socket(_socket, _read_timeout, Polling_Mode::Read) > 0;
+    return utility::poll_socket(_socket, _read_timeout, utility::Polling_Mode::Read) > 0;
 }
+
 
 bool Socket::is_writeable
     (
     void
     )
 {
-    return poll_socket(_socket, _read_timeout, Polling_Mode::Write) > 0;
+    return utility::poll_socket(_socket, _read_timeout, utility::Polling_Mode::Write) > 0;
 }
+
 
 bool Socket::send_response
     (
     const Response& resp
     )
 {
-    String status_line = fmt::format( "HTTP/{}.{} {} {}"
-                                     ,resp.version.major
-                                     ,resp.version.minor
-                                     , 200
-                                     , "OK"
-                                    );
-
-
-    return true;
+    return write_all( resp.to_string() );
 }
+
 
 bool Socket::write_all
     (

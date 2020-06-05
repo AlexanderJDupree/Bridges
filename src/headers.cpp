@@ -10,36 +10,34 @@
 namespace bridges 
 {
 
-void Headers::emplace(String&& field_name, String&& field_value)
+void Headers::append(String&& field_name, String&& field_value)
 {
-    __headers.emplace(field_name, field_value);
+    // https://tools.ietf.org/html/rfc2616#section-4.2
+    if(  data.find(field_name) != data.end() )
+    {
+        data[field_name] += fmt::format(", {}", field_value);
+    }
+    else
+    {
+        data.emplace(field_name, field_value);
+    }
 }
 
-// TODO: Multimap return a range an iterator to a range of values that match the key,
-// We need to concatenate this values together as described in the standard
-String& Headers::get(const String& field_name)
+Maybe<String> Headers::get(const String& field_name) const
 {
-    return __headers.find(field_name)->second;
-}
-
-const String& Headers::get(const String& field_name) const
-{
-    return __headers.find(field_name)->second;
+    try
+    {
+        return data.at(field_name);
+    }
+    catch(...)
+    {
+        return Nothing;
+    }
 }
 
 bool Headers::contains(const String& field_name) const
 {
-    return __headers.find(field_name) != __headers.end();
-}
-
-String& Headers::operator[](const String& field_name)
-{
-    return get(field_name);
-}
-
-const String& Headers::operator[](const String& field_name) const
-{
-    return get(field_name);
+    return data.find(field_name) != data.end();
 }
 
 } // namespace bridges

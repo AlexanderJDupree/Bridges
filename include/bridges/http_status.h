@@ -8,10 +8,12 @@
 #ifndef BRIDGES_HTTP_STATUS_H
 #define BRIDGES_HTTP_STATUS_H
 
+#include <bridges/defs.h>
+
 namespace bridges
 {
 
-enum class Status
+enum Status
 {
     // 1xx Informational Response
     Continue                        = 100,
@@ -23,7 +25,7 @@ enum class Status
     OK                              = 200,
     Created                         = 201,
     Accepted                        = 202,
-    Non_Authoritative_information   = 203,
+    Non_Authoritative_Information   = 203,
     No_Content                      = 204,
     Reset_Content                   = 205,
     Partial_Content                 = 206,
@@ -88,6 +90,81 @@ enum class Status
 
 };
 
+static const std::unordered_map<Status, String> status_to_str_tbl
+{
+    // 1xx Informational Response
+    { Status::Continue,                         "Continue"                      },
+    { Status::Switching_Protocols,              "Switching Protocols"           },
+    { Status::Processing,                       "Processing"                    },
+    { Status::Early_Hints,                      "Early Hints"                   },
+
+    // 2xx Success
+    { Status::OK,                               "OK"                            },
+    { Status::Created,                          "Created"                       },
+    { Status::Accepted,                         "Accepted"                      },
+    { Status::Non_Authoritative_Information,    "Non Authoritative Information" },
+    { Status::No_Content,                       "No Content"                    },
+    { Status::Reset_Content,                    "Reset Content"                 },
+    { Status::Partial_Content,                  "Partial Content"               },
+    { Status::Multi_Status,                     "Multi Status"                  },
+    { Status::Already_Reported,                 "Already Reported"              },
+    { Status::IM_Used,                          "IM Used"                       },
+
+    // 3xx Redirection
+    { Status::Multiple_Choices,                 "Multiple Choices"              },
+    { Status::Moved_Permanently,                "Moved Permanently"             },
+    { Status::Found,                            "Found"                         },
+    { Status::See_Other,                        "See Other"                     },
+    { Status::Not_Modified,                     "Not Modified"                  },
+    { Status::Use_Proxy,                        "Use Proxy"                     },
+    { Status::Switch_Proxy,                     "Switch Proxy"                  },
+    { Status::Temporary_Redirect,               "Temporary Redirect"            },
+    { Status::Permanent_Redirect,               "Permanent Redirect"            },
+
+    // 4xx Client Errors
+    { Status::Bad_Request,                      "Bad Request"                   },
+    { Status::Unauthorized,                     "Unauthorized"                  },
+    { Status::Payment_Required,                 "Payment Required"              },
+    { Status::Forbidden,                        "Forbidden"                     },
+    { Status::Not_Found,                        "Not Found"                     },
+    { Status::Method_Not_Allowed,               "Method Not Allowed"            },
+    { Status::Not_Acceptable,                   "Not Acceptable"                },
+    { Status::Proxy_Authentication_Required,    "Proxy Authentication Required" },
+    { Status::Request_Timeout,                  "Request Timeout"               },
+    { Status::Conflict,                         "Conflict"                      },
+    { Status::Gone,                             "Gone"                          },
+    { Status::Length_Required,                  "Length Required"               },
+    { Status::Precondition_Failed,              "Precondition Failed"           },
+    { Status::Payload_Too_Large,                "Payload Too Large"             },
+    { Status::URI_Too_Long,                     "URI Too Long"                  },
+    { Status::Unsupported_Media_Type,           "Unsupported Media Type"        },
+    { Status::Range_Not_Satisfiable,            "Range Not Satisfiable"         },
+    { Status::Expectation_Failed,               "Expectation Failed"            },
+    { Status::Im_A_Teapot,                      "Im A Teapot"                   },
+    { Status::Misdirected_Request,              "Misdirected Request"           },
+    { Status::Unprocessable_Entity,             "Unprocessable Entity"          },
+    { Status::Locked,                           "Locked"                        },
+    { Status::Failed_Dependency,                "Failed Dependency"             },
+    { Status::Too_Early,                        "Too Early"                     },
+    { Status::Upgrade_Required,                 "Upgrade Required"              },
+    { Status::Precondition_Required,            "Precondition Required"         },
+    { Status::Too_Many_Requests,                "Too Many Requests"             },
+    { Status::Request_Header_Fields_Too_Large,  "Request Header Fields Too Large"},
+    { Status::Unavailable_For_Legal_Reasons,    "Unavailable For Legal Reasons" },
+
+    // 5xx Server Errors
+    { Status::Internal_Server_Error,            "Internal Server Error"         },
+    { Status::Not_Implemented,                  "Not Implemented"               },
+    { Status::Bad_Gateway,                      "Bad Gateway"                   },
+    { Status::Service_Unavailable,              "Service Unavailable"           },
+    { Status::Gateway_Timeout,                  "Gateway Timeout"               },
+    { Status::HTTP_Version_Not_Supported,       "HTTP Version Not Supported"    },
+    { Status::Variant_Also_Negotiates,          "Variant Also Negotiates"       },
+    { Status::Insufficient_Storage,             "Insufficient Storage"          },
+    { Status::Loop_Detected,                    "Loop Detected"                 },
+    { Status::Not_Extended,                     "Not Extended"                  },
+    { Status::Network_Authentication_Required,  "Network Authentication Required"},
+};
 
 } // namespace bridges
 

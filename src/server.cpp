@@ -6,6 +6,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 #include <bridges/server.h>
+#include <bridges/utility.h>
 
 namespace bridges
 {
@@ -103,17 +104,15 @@ bool Server::__listen
 
 bool Server::__handle_request( Socket client)
 {
-    if ( Maybe<Request> req = __read_request( client ) )
-    {
-        return dispatch_request( client, req.value() );
-    }
+    // TODO: thread pool management stuff here
+
+    return __dispatch_request( client, __read_request( client ) );
 
     // client.send_response( bad_request_handler() );
     Buffer msg = "HTTP/1.1 400 Bad Request\nServer: bridges-0.2.0\nContent-Type: text/plain\nContent-Length: 24\n\nSo. . . That didn't work\n";
-    return client.write_all(msg) && client.close();
 }
 
-bool Server::dispatch_request
+bool Server::__dispatch_request
     (
     Socket client,
     const Request& request
@@ -128,12 +127,15 @@ bool Server::dispatch_request
     return client.write_all(msg) && client.close();
 }
 
-Maybe<Request> Server::__read_request
+// TODO: benchmark performance of this compared to passing in an out parameter to modify
+Request Server::__read_request
     (
     Socket client
     )
 // TODO: Review Compliance with https://tools.ietf.org/html/rfc7230#section-3
 {
+    using namespace utility;
+
     Buffer  buffer;
     Request req;
 
@@ -152,7 +154,7 @@ Maybe<Request> Server::__read_request
         // verify headers first??
         return req;
     }
-    return Nothing;
+    return Request(); // Default Request will trigger a 400 response
 }
 
 } // namespace bridges

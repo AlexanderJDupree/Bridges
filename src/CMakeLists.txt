@@ -4,8 +4,9 @@ project(bridges)
 add_library(bridges STATIC 
             server.cpp
             socket.cpp
-            common.cpp
+            utility.cpp
             request.cpp
+            response.cpp
             headers.cpp
            )
 

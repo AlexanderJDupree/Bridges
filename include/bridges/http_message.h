@@ -9,7 +9,7 @@
 #ifndef BRIDGES_HTTP_MESSAGE_H
 #define BRIDGES_HTTP_MESSAGE_H
 
-#include <bridges/common.h>
+#include <bridges/types.h>
 #include <bridges/headers.h>
 
 namespace bridges
@@ -22,6 +22,10 @@ public:
     Headers headers = {};
     String  body    = "";
     Protocol_Version version = {0,0};
+
+    virtual String to_string() const = 0;
+
+    operator String()const { return to_string(); }
 };
 
 } // namespace bridges

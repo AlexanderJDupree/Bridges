@@ -16,8 +16,6 @@
 #define BRIDGES_VERSION_MINOR 2
 #define BRIDGES_VERSION_PATCH 0
 
-#define BRIDGES_VERSION "0.2.0"
-
 #define BRIDGES_HTTP_MAX_LINE_LENGTH  8192
 #define BRIDGES_HTTP_MAX_REQUEST_SIZE 65536
 
@@ -40,11 +38,13 @@
 #include <string>
 #include <cctype>
 #include <vector>
+#include <numeric>
 #include <cstdint>
 #include <iterator>
 #include <optional>
 #include <algorithm>
 #include <functional>
+#include <unordered_map>
 
 #include "strtk.hpp" // TODO: Abstract dependencies behind an API
 #include "fmt/format.h"

@@ -21,6 +21,7 @@ public:
     Method  method  = INVALID;
     URI     target  = "";
 
+    String to_string() const override;
 };
 
 } // namespace bridges

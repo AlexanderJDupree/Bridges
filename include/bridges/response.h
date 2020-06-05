@@ -18,9 +18,9 @@ class Response : public HTTP_Message
 {
 public:
 
-    Status status = Status::OK;
+    Status status = Status::Not_Implemented;
 
-private:
+    String to_string() const override;
 
 };
 

@@ -60,12 +60,6 @@ public:
         Handler handler
         );
 
-    bool dispatch_request
-        (
-        Socket client,
-        const Request& request
-        );
-
 private:
 
     Socket  _server_socket;
@@ -89,7 +83,13 @@ private:
         Socket client 
         );
 
-    Maybe<Request> __read_request
+    bool __dispatch_request
+        (
+        Socket client,
+        const Request& request
+        );
+
+    Request __read_request
         (
         Socket client
         );
