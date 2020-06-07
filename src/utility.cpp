@@ -15,6 +15,7 @@ namespace bridges
 namespace utility
 {
 
+
 int poll_socket
     ( 
     socket_t socket, 
@@ -203,7 +204,6 @@ String format_headers
     }
     return output;
 }
-
 
 } //namespace utility
 

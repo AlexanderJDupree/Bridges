@@ -18,6 +18,19 @@ class Request : public HTTP_Message
 {
 public:
 
+    Request
+        ( 
+        Method            method    = INVALID,
+        URI               target    = "",
+        Headers           headers   = {},
+        String            body      = "",
+        Protocol_Version  version   = {0,0}
+        )
+    : HTTP_Message( headers, body, version )
+    , method( method )
+    , target( target )
+    {}
+
     Method  method  = INVALID;
     URI     target  = "";
 

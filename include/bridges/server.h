@@ -8,6 +8,7 @@
 #ifndef BRIDGES_SERVER_H
 #define BRIDGES_SERVER_H
 
+#include <bridges/types.h>
 #include <bridges/socket.h>
 #include <bridges/request.h>
 #include <bridges/response.h>
@@ -15,10 +16,9 @@
 namespace bridges
 {
 
-using Handler = std::function<Response(const Request&)>;
-
 class Server
 {
+
 public:
 
     Server
@@ -60,14 +60,29 @@ public:
         Handler handler
         );
 
+    Response not_found
+        (
+        void
+        );
+
+    void set_not_found_handler
+        (
+        std::function<Response(void)>
+        );
+
 private:
 
-    Socket  _server_socket;
-    size_t  _backlog;
-    size_t  _keep_alive_max_count;
-    size_t  _read_timeout_sec;
-    size_t  _read_timeout_usec;
-    Path    _document_root;
+    static const Handler_Table      BRIDGES_DFLT_HANDLERS;
+
+    Socket              _server_socket;
+    size_t              _backlog;
+    size_t              _keep_alive_max_count;
+    size_t              _read_timeout_sec;
+    size_t              _read_timeout_usec;
+    Path                _document_root;
+    Handler_Table       _handlers;
+
+    std::function<Response(void)> _not_found;
 
 #ifdef _WIN32
     WSADATA wsadata;    /* stores details about windows socket info */
@@ -95,7 +110,6 @@ private:
         );
 
 };
-
     
 } // namespace bridges
 

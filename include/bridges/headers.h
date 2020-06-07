@@ -29,7 +29,14 @@ class Headers
 {
 public:
 
-    using headers_t = std::map<String, String, case_insensitive_compare>;
+    using headers_t  = std::map<String, String, case_insensitive_compare>;
+
+    Headers
+        (
+        headers_t&& data = {}
+        )
+    : data( data )
+    {}
 
     // TODO: figure out how to order headers by category if possible
     headers_t data;
@@ -41,6 +48,7 @@ public:
     bool contains(const String& field_name) const;
 
 };
+
 
 } //namespace bridges
 

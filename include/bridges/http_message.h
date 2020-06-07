@@ -19,9 +19,20 @@ class HTTP_Message
 {
 public:
 
-    Headers headers = {};
-    String  body    = "";
-    Protocol_Version version = {0,0};
+    HTTP_Message
+        ( 
+        Headers           headers = {},
+        String            body = "",
+        Protocol_Version  version = {0,0}
+        )
+    : headers   ( headers   )
+    , body      ( body      )
+    , version   ( version   )
+    {}
+
+    Headers             headers;
+    String              body;
+    Protocol_Version    version;
 
     virtual String to_string() const = 0;
 

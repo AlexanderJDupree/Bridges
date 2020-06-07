@@ -11,6 +11,29 @@
 namespace bridges
 {
 
+static const Request_Handler Bad_Request_400 {
+    .route = "*",
+    .action = [](const Request&, Response& resp){
+        Headers headers;
+        headers.data = {
+            { "Server", "bridges-" + BRIDGES_VERSION },
+            { "Status", "400 bad request" },
+            { "Content-Type", "text/html; charset=utf-8"},
+        };
+        resp = Response(
+            Status::Bad_Request,
+            headers, 
+            {1, 1 },
+            "<header>400 Bad Request</header>"
+        );
+    }
+};
+
+const Handler_Table Server::BRIDGES_DFLT_HANDLERS = 
+{
+    { INVALID, { Bad_Request_400 } }
+};
+
 Server::Server
     (
     Path    document_root, 
@@ -18,9 +41,10 @@ Server::Server
     size_t  keep_alive_max_count,
     time_t  read_timeout
     )
-: _backlog              ( server_backlog        )
-, _keep_alive_max_count ( keep_alive_max_count  )
-, _document_root        ( document_root         )
+: _backlog              ( server_backlog            )
+, _keep_alive_max_count ( keep_alive_max_count      )
+, _document_root        ( document_root             )
+, _handlers             ( BRIDGES_DFLT_HANDLERS     )
 {
     _server_socket = INVALID_SOCKET;
     _server_socket.read_timeout() = read_timeout;
@@ -32,6 +56,23 @@ Server::Server
         throw std::exception( "( Bridges ) FATAL: WSAStartup Failed." );
 		}
 #endif
+
+    _not_found = [](){
+        // TODO: Add date header
+        Headers headers;
+        headers.data = {
+            { "Server", "bridges-" + BRIDGES_VERSION },
+            { "Status", "404 not found" },
+            { "Content-Type", "text/html; charset=utf-8"},
+        };
+
+        return Response(
+            Status::Not_Found,
+            headers, 
+            {1, 1 },
+            "<header>404 Not Found</header>"
+        );
+    };
 }
 
 
@@ -106,10 +147,8 @@ bool Server::__handle_request( Socket client)
 {
     // TODO: thread pool management stuff here
 
-    return __dispatch_request( client, __read_request( client ) );
-
-    // client.send_response( bad_request_handler() );
-    Buffer msg = "HTTP/1.1 400 Bad Request\nServer: bridges-0.2.0\nContent-Type: text/plain\nContent-Length: 24\n\nSo. . . That didn't work\n";
+    // TODO: don't close client if directed to keep-alive
+    return __dispatch_request( client, __read_request( client ) ) && client.close();
 }
 
 bool Server::__dispatch_request
@@ -118,9 +157,18 @@ bool Server::__dispatch_request
     const Request& request
     )
 {
-    // Lookup handlers
+    for ( const auto& handler : _handlers[request.method] )
+    {
+        if( std::regex_match( request.target, std::regex(handler.route) ) )
+        {
+            Response response;
 
-    // client.send_response( handler(request) );
+            handler.action( request, response );
+
+            return client.write_all( response.to_string() );
+        }
+    }
+    return client.write_all( _not_found().to_string() );
     
     Buffer msg = "HTTP/1.1 200 OK\nServer: bridges-0.2.0\nContent-Type: text/plain\nContent-Length: 12\n\nHello world!\n"; 
 
@@ -155,6 +203,14 @@ Request Server::__read_request
         return req;
     }
     return Request(); // Default Request will trigger a 400 response
+}
+
+void Server::set_not_found_handler
+    (
+    std::function<Response(void)> handler
+    )
+{
+    _not_found = handler;
 }
 
 } // namespace bridges

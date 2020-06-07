@@ -17,12 +17,14 @@ namespace bridges
 class Request;
 class Response;
 class Headers;
+class Socket;
 
 using String    = std::string;
 using Path      = String;
 using Buffer    = String;
 using URI       = String;
 using Tokens    = std::vector<String>;
+using Handler   = std::function<void(const Request&, Response&)>;
 
 // TODO: Consider making a method class that encapsulates string conversion, 
 // and scopes the type to only these valid enumerations. I.E. the type system does 
@@ -41,6 +43,12 @@ OPTIONS         =   SET_BIT(7),
 TRACE           =   SET_BIT(8),
 PATCH           =   SET_BIT(9)
 };
+
+struct Request_Handler {
+    const char* route;
+    Handler action;
+};
+using Handler_Table  = std::map<Method, std::vector<Request_Handler>>;
 
 struct time_t  {
     size_t sec;

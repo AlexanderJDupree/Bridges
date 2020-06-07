@@ -17,6 +17,14 @@ namespace bridges
 class Response : public HTTP_Message
 {
 public:
+    Response( Status            status  = Status::Not_Implemented
+            , Headers           headers = {} 
+            , Protocol_Version  version = {0, 0}
+            , String            body    = ""
+            )
+        : HTTP_Message( headers, body, version )
+        , status( status )
+        {}
 
     Status status = Status::Not_Implemented;
 
