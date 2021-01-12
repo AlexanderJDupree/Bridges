@@ -27,6 +27,7 @@
 
 #include <iostream>
 #include <bridges/server.h>
+#include <bridges/utility.h>
 
 int main(int, char**)
 {

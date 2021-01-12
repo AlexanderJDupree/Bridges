@@ -2,13 +2,14 @@ cmake_minimum_required(VERSION 3.2)
 project(bridges_tests)
 
 include_directories(${BRIDGES_INCLUDE})
-include_directories(../third_party/googletest/googletest/include)
+include_directories(${THIRD_PARTY_INCLUDE}/googletest/googletest/include)
 
 set( SOURCE_FILES 
     run_tests.cpp
     server_tests.cpp
     socket_tests.cpp
-    parser_tests.cpp
+    utility_tests.cpp
+    http_message_tests.cpp
    )
 
 add_executable(bridges_tests ${SOURCE_FILES})

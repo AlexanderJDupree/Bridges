@@ -2,11 +2,12 @@ cmake_minimum_required(VERSION 3.2)
 
 project(bridges)
 
+set(CMAKE_CXX_STANDARD 17)
+
 if(MSVC)
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++17")
 	set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /DEBUG")
 else()
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -Wall -Werror")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror")
 	set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g")
 endif()
 
@@ -19,10 +20,14 @@ set(THIRD_PARTY_INCLUDE ${PROJECT_SOURCE_DIR}/third_party)
 
 add_definitions( -Dstrtk_no_tr1_or_boost )
 
-include_directories(${BRIDGES_INCLUDE} ${THIRD_PARTY_INCLUDE})
+include_directories( ${BRIDGES_INCLUDE} 
+					 ${THIRD_PARTY_INCLUDE}/strtk 
+					 ${THIRD_PARTY_INCLUDE}/fmt/include
+				   )
 
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 
 add_subdirectory(src)
 add_subdirectory(tests)
 add_subdirectory(third_party/googletest)
+add_subdirectory(third_party/fmt)

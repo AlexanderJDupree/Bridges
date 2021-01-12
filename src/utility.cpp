@@ -5,17 +5,22 @@
 //  License :   MIT
 ///////////////////////////////////////////////////////////////////////////////
 
-#include <bridges/common.h>
+#include <bridges/utility.h>
 #include <bridges/request.h>
+#include <bridges/headers.h>
 
 namespace bridges 
 {
+
+namespace utility
+{
+
 
 int poll_socket
     ( 
     socket_t socket, 
     time_t timeout, 
-    SELECT_MODE mode
+    Polling_Mode mode
     )
 {
 // TODO: poll() or select()? Or make configurable 
@@ -28,12 +33,15 @@ int nfds = socket + 1; // See select manual for derivation of this value
 
 switch ( mode )
     {
-    case SELECT_MODE::READ_FDS:
+    case Polling_Mode::Read:
         return select(nfds, &fds, NULL, NULL, reinterpret_cast<timeval*>(&timeout));
-    case SELECT_MODE::WRITE_FDS:
+
+    case Polling_Mode::Write:
         return select(nfds, nullptr, &fds, nullptr, reinterpret_cast<timeval*>(&timeout));
-    case SELECT_MODE::ERROR_FDS:
+
+    case Polling_Mode::Error:
         return select(nfds, nullptr, nullptr, &fds, reinterpret_cast<timeval*>(&timeout));
+
     default:
         return -1;
     }
@@ -64,27 +72,31 @@ Method read_method
     const String& method
     )
 {
-    using Method_Table = std::map<String, Method>;
-    Method_Table table {
-        { "GET",        GET     },
-        { "HEAD",       HEAD    },
-        { "POST",       POST    },
-        { "PUT",        PUT     },
-        { "DELETE",     DELETE  },
-        { "CONNECT",    CONNECT },
-        { "OPTIONS",    OPTIONS },
-        { "TRACE",      TRACE   },
-        { "PATCH",      PATCH   },
-    };
     try
     {
-        return table.at(method);
+        return str_to_method_tbl.at(method);
     }
-    catch(const std::out_of_range&)
+    catch(...)
     {
         return INVALID;
     }
 }
+
+String show_method
+    (
+    Method method
+    )
+{
+    try
+    {
+        return method_to_str_tbl.at(method);
+    }
+    catch(...)
+    {
+        return "INVALID";
+    }
+}
+
 
 Protocol_Version read_http_version
     (
@@ -105,13 +117,20 @@ Protocol_Version read_http_version
     return { static_cast<uint8_t>(major), static_cast<uint8_t>(minor) };
 }
 
+String show_http_version
+    (
+    Protocol_Version version
+    )
+{
+    return fmt::format("HTTP/{}.{}", version.major, version.minor);
+}
+
 bool process_header
     (
     const String& header,
     Request& req 
     )
 // TODO: Review Compliance with https://tools.ietf.org/html/rfc7230#section-3.2
-// TODO: Review Compliance with https://tools.ietf.org/html/rfc7230#section-3.2.4
 { 
     String field_name;
     String field_value;
@@ -124,7 +143,7 @@ bool process_header
 
     if ( status && (status = !has_whitespace( field_name )) )
     {
-        req.headers.emplace( std::forward<String>(field_name), std::forward<String>(field_value) );
+        req.headers.append( std::forward<String>(field_name), std::forward<String>(field_value) );
     }
     return status;
 }
@@ -146,5 +165,46 @@ bool has_whitespace
         return std::isspace(c);
     }) != str.end();
 }
+
+
+String format_request_line
+    (
+    const Method&           method, 
+    const URI&              request_uri,
+    const Protocol_Version& version
+    )
+{
+    return fmt::format( "{} {} HTTP/{}.{}\r\n", show_method( method )
+                                              , request_uri
+                                              , version.major
+                                              , version.minor );
+}
+
+String format_status_line
+    (
+    const Protocol_Version& version,
+    const Status status
+    )
+{
+    return fmt::format( "HTTP/{}.{} {} {}\r\n", version.major
+                                              , version.minor
+                                              , static_cast<int>( status )
+                                              , status_to_str_tbl.at( status ) );
+}
+
+String format_headers
+    (
+    const Headers& headers
+    )
+{
+    String output;
+    for (const auto& header : headers.data)
+    {
+        output += fmt::format("{}: {}\r\n", header.first, header.second);
+    }
+    return output;
+}
+
+} //namespace utility
 
 } // namespace bridges

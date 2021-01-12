@@ -8,7 +8,8 @@
 #ifndef BRIDGES_HEADERS_H
 #define BRIDGES_HEADERS_H
 
-#include <bridges/common.h>
+#include <bridges/types.h>
+#include <bridges/utility.h>
 
 namespace bridges
 {
@@ -24,27 +25,30 @@ struct case_insensitive_compare {
 
 };
 
-class Headers
+class Headers 
 {
 public:
-    // TODO: add constructors
 
-    void emplace(String&& field_name, String&& field_value);
+    using headers_t  = std::map<String, String, case_insensitive_compare>;
 
-    String& get(const String& field_name);
-    const String& get(const String& field_name) const;
+    Headers
+        (
+        headers_t&& data = {}
+        )
+    : data( data )
+    {}
+
+    // TODO: figure out how to order headers by category if possible
+    headers_t data;
+
+    void append(String&& field_name, String&& field_Value);
+
+    Maybe<String> get(const String& field_name) const;
 
     bool contains(const String& field_name) const;
 
-    String& operator[](const String& field_name);
-    const String& operator[](const String& field_name) const;
-
-private:
-
-    using headers_t = std::multimap<String, String, case_insensitive_compare>;
-
-    headers_t __headers;
 };
+
 
 } //namespace bridges
 

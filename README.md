@@ -25,6 +25,8 @@ int main(void)
 
     server.route("/", GET, [](const Request& request, Response& resp){
         resp.set_content("index.html");
+
+        return Status::OK;
     })
 
     server.route("/update", GET|POST, [](const Request& request, Response& resp) {
@@ -40,7 +42,7 @@ int main(void)
             // Do something with post parameters
 
         }
-        resp.status_code( OK );
+        return 200;
     }
 
     server.listen("localhost", 8000);

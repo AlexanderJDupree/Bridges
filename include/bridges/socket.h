@@ -9,9 +9,7 @@
 #ifndef BRIDGES_SOCKET_H
 #define BRIDGES_SOCKET_H
 
-#include <functional>
-
-#include <bridges/common.h>
+#include <bridges/types.h>
 
 namespace bridges
 {
@@ -60,7 +58,20 @@ public:
         void
         );
 
-    bool write_all(const Buffer& buffer);
+    bool is_writeable
+        (
+        void
+        );
+
+    bool send_response
+        (
+        const Response& response
+        );
+
+    bool write_all
+        (
+        const Buffer& buffer
+        );
 
     ssize_t read
         ( 

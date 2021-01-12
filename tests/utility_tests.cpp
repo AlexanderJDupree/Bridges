@@ -1,16 +1,20 @@
 ///////////////////////////////////////////////////////////////////////////////
-//  File    :   parser_tests.cpp
-//  Brief   :   Test suite for the Brides parsing utilities
+//  File    :   utility_tests.cpp
+//  Brief   :   Test suite for the Brides utility functions
 //  Author  :   Alexander DuPree
 //  License :   MIT
 ///////////////////////////////////////////////////////////////////////////////
 
-#include <bridges/common.h>
+#include <bridges/utility.h>
 #include <bridges/request.h>
+#include <bridges/response.h>
 
 #include <gtest/gtest.h>
 
 namespace bridges 
+{
+
+namespace utility
 {
 
 class ParsersTest : public::testing::Test {
@@ -33,27 +37,6 @@ TEST_F(ParsersTest, ReadMethodTokensWithWhitespace)
     EXPECT_EQ(read_method("GET "), INVALID);
     EXPECT_EQ(read_method(" GET"), INVALID);
     EXPECT_EQ(read_method("G ET"), INVALID);
-}
-
-TEST_F(ParsersTest, ReadMethodValidTokens)
-{
-    using Method_Table = std::map<String, Method>;
-    Method_Table table {
-        { "GET",        GET     },
-        { "HEAD",       HEAD    },
-        { "POST",       POST    },
-        { "PUT",        PUT     },
-        { "DELETE",     DELETE  },
-        { "CONNECT",    CONNECT },
-        { "OPTIONS",    OPTIONS },
-        { "TRACE",      TRACE   },
-        { "PATCH",      PATCH   },
-    };
-
-    for ( auto method : table )
-    {
-        EXPECT_EQ(read_method(method.first), method.second);
-    }
 }
 
 TEST_F(ParsersTest, ReadHttpVersionValidString)
@@ -132,7 +115,7 @@ TEST_F(ParsersTest, ProcessHeaderValidHeader)
     String header = "accept-encoding: gzip, deflate, br";
 
     EXPECT_EQ( process_header( header, request ), true );
-    EXPECT_EQ( request.headers["accept-encoding"], "gzip, deflate, br");
+    EXPECT_EQ( request.headers.data["accept-encoding"], "gzip, deflate, br");
 }
 
 TEST_F(ParsersTest, ProcessHeaderWithWhitespace)
@@ -145,7 +128,83 @@ TEST_F(ParsersTest, ProcessHeaderWithWhitespace)
     EXPECT_EQ( process_header( wsBeforeFieldName, request ), false );
     EXPECT_EQ( process_header( leadingWSBeforeFieldValue, request ), true );
 
-    EXPECT_EQ( request.headers["accept-encoding"], "gzip, deflate, br");
+    EXPECT_EQ( request.headers.data["accept-encoding"], "gzip, deflate, br");
+}
+
+TEST_F(ParsersTest, DefaultRequestDoesNotHaveBody)
+{
+    EXPECT_EQ( has_body( request ), false );
+}
+
+TEST(FormatTests, FormatRequestLineNormalCase)
+{
+    const String expected = "GET www.google.com HTTP/1.1\r\n";
+
+    const String actual = format_request_line( GET, "www.google.com", {1, 1});
+
+    EXPECT_EQ( expected, actual);
+}
+
+TEST(FormatTests, FormatRequestLineEmptyRequest)
+{
+    Request req;
+
+    const String expected = "INVALID  HTTP/0.0\r\n";
+
+    const String actual = format_request_line( req.method, req.target, req.version);
+
+    EXPECT_EQ( expected, actual);
+}
+
+TEST(FormatTests, FormatStatusLineNormalCase)
+{
+    const String expected = "HTTP/1.1 200 OK\r\n";
+
+    const String actual = format_status_line( {1,1}, Status::OK);
+
+    EXPECT_EQ( expected, actual);
+}
+
+TEST(FormatTests, FormatStatusLineEmptyResponse)
+{
+    Response resp;
+    
+    const String expected = "HTTP/0.0 501 Not Implemented\r\n";
+
+    const String actual = format_status_line( resp.version, resp.status );
+
+    EXPECT_EQ( expected, actual);
+}
+
+TEST(FormatTests, FormatHeadersEmptyHeaders)
+{
+    Headers headers;
+
+    EXPECT_EQ( format_headers( headers ), "" );
+}
+
+TEST(FormatTests, FormatHeadersSimpleCase)
+{
+    Headers headers; 
+    headers.data = {
+        { "Accept-Encoding", "gzip"}
+    };
+
+    EXPECT_EQ( format_headers( headers ), "Accept-Encoding: gzip\r\n" );
+}
+
+TEST(FormatTests, FormatHeadersAppendedHeaders)
+{
+    Headers headers; 
+    headers.data = {
+        { "Accept-Encoding", "gzip"}
+    };
+
+    headers.append( "Accept-Encoding", "deflate" );
+
+    EXPECT_EQ( format_headers( headers ), "Accept-Encoding: gzip, deflate\r\n" );
 }
     
+} // namespace utility
+
 } // namespace bridges
